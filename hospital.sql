@@ -176,7 +176,8 @@ DROP TABLE IF EXISTS `userstore`;
 CREATE TABLE `userstore` (
   `id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `pass` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
-  `ts` timestamp NOT NULL,
+  `ts` timestamp NULL DEFAULT NULL,
+  `type` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -187,6 +188,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
+INSERT INTO `userstore` VALUES ('d','123',NULL,'d'),('p','123',NULL,'p'),('r','123',NULL,'r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -199,4 +201,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-26 16:28:48
+-- Dump completed on 2020-06-26 23:23:41
