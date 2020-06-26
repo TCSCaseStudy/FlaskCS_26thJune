@@ -22,5 +22,5 @@ This is a Case Study using Flask Framework, assigned by TCS on 26th June 2020 .
     `mysql hospital < hospital.sql`
     
 # Database Tables Schema
-![DB_Image]
-(https://github.com/TCSCaseStudy/FlaskCS_26thJune/blob/master/DB%20Logical%20Schema.png)
+![DB_Image](https://github.com/TCSCaseStudy/FlaskCS_26thJune/blob/master/DB%20Logical%20Schema.png)
+
