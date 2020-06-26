@@ -1,6 +1,7 @@
 from app import app
 
 @app.route("/")
-@app.route("/index")
+@app.route("/index",methods=['GET','POST'])
 def index():
 	return "<h1>Hello World</h1>"
+
