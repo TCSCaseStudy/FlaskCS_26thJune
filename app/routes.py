@@ -8,3 +8,5 @@ def index():
 @app.route("/login",methods=['GET','POST'])
 def login():
     pass
+
+# Add methods here
