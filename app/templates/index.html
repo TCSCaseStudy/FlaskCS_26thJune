@@ -1,4 +1,37 @@
-{% extends 'base.html' %}
-{% block main %}
-<h1>index page</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>TCS Medicare</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/open-iconic-bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/animate.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/aos.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-datepicker.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/jquery.timepicker.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/flaticon.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/icomoon.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+</head>
+
+<body>
+    {% include "includes/header.html" %}
+    {% if session['p_login'] %}
+    {% include "includes/p_nav.html" %}
+    {% elif session['d_login'] %}
+    {% include "includes/d_nav.html" %}
+    {% elif session['r_login'] %}
+    {% include "includes/r_nav.html" %}
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+    {% include "includes/footer.html" %}
+    {%include "includes/scripts.html" %}
+</body>
+</html>
