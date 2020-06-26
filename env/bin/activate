@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/samdharsikumar/Desktop/CS/env"
+VIRTUAL_ENV="/Users/samdharsikumar/Documents/GitHub.nosync/FlaskCS_26thJune/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
