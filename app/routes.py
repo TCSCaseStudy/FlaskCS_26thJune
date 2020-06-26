@@ -1,5 +1,3 @@
-# Testing PR
-
 from app import app
 
 @app.route("/")
