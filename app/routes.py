@@ -5,3 +5,6 @@ from app import app
 def index():
 	return "<h1>Hello World</h1>"
 
+@app.route("/login",methods=['GET','POST'])
+def login():
+    pass
