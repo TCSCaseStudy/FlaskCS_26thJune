@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/samdharsikumar/Desktop/CS/env"
+set -gx VIRTUAL_ENV "/Users/samdharsikumar/Documents/GitHub.nosync/FlaskCS_26thJune/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
