@@ -1,8 +1,8 @@
 # FlaskCS_26thJune
 This is a Case Study using Flask Framework, assigned by TCS on 26th June 2020 .
 
-#### Steps to create a pull request
-# Using CLI:
+## Steps to create a pull request
+#### Using CLI:
 1. Make changes to your code
 2. Change current branch `git checkout reviewBySam`
 3. After all the changes has been made, use command `git add .`
