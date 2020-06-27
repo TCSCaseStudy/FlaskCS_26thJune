@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+{% block content %}
+
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <style>
+        .required:after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container d-flex align-items-center">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+            aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa fa-bars" aria-hidden="true">Œ Menu</i>
+        </button>
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a href="{{url_for('login')}}" class="nav-link">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="register">
+    <h1>REGISTER</h1>
+    <form action="{{ url_for('register') }}" method="post">
+        <div class="form-group row">
+            <label for="username"><i class="fas fa-user"></i></label>
+            <input type="text" name="username" placeholder="Username" id="username" required>
+        </div>
+        <div class="form-group row">
+            <label for="password"><i class="fas fa-lock"></i></label>
+            <input type="password" name="password" placeholder="Password" id="password" required>
+        </div>
+        <div class="form-group row">
+            <label for="type"><i class="fas fa-id-badge"></i></label>
+            <select name="dept" id="dept" style="text-align-last:center;width:310px;height:50px;" required>
+                <option value="r">Registration Desk Executive</option>
+                <option value="p">Pharmacist</option>
+                <option value="d">Diagnostics Service Executive</option>
+            </select>
+        </div>
+        <div class="msg">{{msg}}</div>
+        <input type="submit" value="Register">
+    </form>
+</div>
+{% endblock %}

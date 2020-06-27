@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.17, for osx10.14 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.19, for osx10.15 (x86_64)
 --
 -- Host: localhost    Database: hospital
 -- ------------------------------------------------------
--- Server version	8.0.17
+-- Server version	8.0.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,7 @@ CREATE TABLE `bills` (
   `dbill` float(10,2) NOT NULL,
   `mbill` float(10,2) NOT NULL,
   `rbill` float(10,2) NOT NULL,
-  `pid` int(11) NOT NULL,
+  `pid` int NOT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -48,9 +48,9 @@ DROP TABLE IF EXISTS `diagnostics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `diagnostics` (
-  `ws_pat_id` int(11) NOT NULL,
-  `ws_diagn` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_test_id` int(11) NOT NULL,
+  `ws_pat_id` int NOT NULL,
+  `ws_diagn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_test_id` int NOT NULL,
   PRIMARY KEY (`ws_pat_id`,`ws_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -72,10 +72,9 @@ DROP TABLE IF EXISTS `medicines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicines` (
-  `ws_pat_id` int(11) NOT NULL,
-  `ws_med_name` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_qty` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ws_pat_id`)
+  `ws_pat_id` int NOT NULL,
+  `ws_med_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_qty` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -96,10 +95,10 @@ DROP TABLE IF EXISTS `meds_master`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `meds_master` (
-  `ws_med_id` int(11) NOT NULL,
-  `ws_med_name` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_med_id` int NOT NULL,
+  `ws_med_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_rate` float(10,2) DEFAULT NULL,
-  `ws_med_qty` int(11) DEFAULT NULL,
+  `ws_med_qty` int DEFAULT NULL,
   PRIMARY KEY (`ws_med_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -121,16 +120,16 @@ DROP TABLE IF EXISTS `patient`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient` (
-  `ws_ssn` int(11) NOT NULL,
-  `ws_pat_id` int(11) NOT NULL,
-  `ws_adrs` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_age` int(11) DEFAULT NULL,
+  `ws_ssn` int NOT NULL,
+  `ws_pat_id` int NOT NULL,
+  `ws_adrs` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_age` int DEFAULT NULL,
   `ws_doj` date DEFAULT NULL,
   `ws_discharge` date DEFAULT NULL,
-  `ws_rtype` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_pat_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_pat_city` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_rtype` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_pat_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_pat_city` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`ws_ssn`,`ws_pat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -152,8 +151,8 @@ DROP TABLE IF EXISTS `tests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tests` (
-  `ws_test_id` int(11) NOT NULL,
-  `ws_test_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_test_id` int NOT NULL,
+  `ws_test_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_test_chrg` float(10,2) DEFAULT NULL,
   PRIMARY KEY (`ws_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -176,10 +175,10 @@ DROP TABLE IF EXISTS `userstore`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `userstore` (
-  `id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pass` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `pass` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `ts` timestamp NULL DEFAULT NULL,
-  `type` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -190,7 +189,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','123',NULL,'d'),('p','123',NULL,'p'),('r','123',NULL,'r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:18','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:30','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -203,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-27 14:12:35
+-- Dump completed on 2020-06-27 19:38:09

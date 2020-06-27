@@ -2,8 +2,9 @@ from app import app
 from flask_mysqldb import MySQL
 from flask import Flask, render_template, request, redirect, url_for, session
 import MySQLdb.cursors
-import config
-import random
+import config,random,hashlib
+import time,datetime
+
 
 app.secret_key = config.Config.SECRET_KEY
 app.config['MYSQL_DB'] = 'hospital'
@@ -19,16 +20,27 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
+        h = hashlib.md5(password.encode())
+        digest = h.hexdigest()
+        ts = time.time()
+        timestamp = datetime.datetime.fromtimestamp(
+            ts).strftime('%Y-%m-%d %H:%M:%S')
+
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT * FROM userstore WHERE id = %s AND pass = %s', (username, password,))
+            'SELECT * FROM userstore WHERE id = %s AND pass = %s', (username, digest))
         # Fetch one record and return result
         account = cursor.fetchone()
         # If account exists in accounts table in out database
         if account:
             # Create session data, we can access this data in other routes
             session['loggedin'] = True
+            try:
+                cursor.execute('update userstore set ts=%s where id=%s',(timestamp,username))
+                mysql.connection.commit()
+            except Exception as e:
+                return str(e)
             if account['type'] == 'p':
                 session['p_login'] = True
             elif account['type'] == 'd':
@@ -42,6 +54,43 @@ def login():
             msg = 'Incorrect username/password!'
     # Show the login form with message (if any)
     return render_template("includes/login.html", msg=msg)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # Output message if something goes wrong...
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'dept' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        h = hashlib.md5(password.encode())
+        digest = h.hexdigest()
+        dept = request.form['dept']
+        ts = time.time()
+        timestamp = datetime.datetime.fromtimestamp(
+            ts).strftime('%Y-%m-%d %H:%M:%S')
+        # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            'SELECT * FROM userstore WHERE id = %s AND pass = %s', (username, digest))
+        # Fetch one record and return result
+        account = cursor.fetchone()
+        # If account exists in accounts table in out database
+        if account:
+            msg='Account already exists. Please use login.'
+            return render_template("includes/register.html",msg=msg)
+        else:
+            try:
+                cursor.execute('INSERT INTO userstore values(%s,%s,%s,%s)',
+                               (username, digest, timestamp, dept))
+                mysql.connection.commit()
+                msg='User Registered Successfully'
+            except Exception as msg:
+                # msg='Something went wrong. Please try again'
+                return render_template("includes/register.html",msg=msg)
+            finally:
+                cursor.close()
+    return render_template("includes/register.html", msg=msg)
 
 
 @app.route("/logout")
