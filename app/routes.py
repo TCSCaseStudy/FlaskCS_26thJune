@@ -7,6 +7,12 @@ import time,datetime
 
 
 app.secret_key = config.Config.SECRET_KEY
+# for xampp
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+
+
 app.config['MYSQL_DB'] = 'hospital'
 mysql = MySQL(app)
 
@@ -138,9 +144,31 @@ def patientBilling():
     return render_template("includes/patientBilling.html")
 
 
-@app.route("/getPatientDetails", methods=["GET", "POST"])
+@app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
-    return render_template("includes/getPatientDetails.html")
+    msg=""
+    if request.method == 'POST':
+        patientid = request.form['patientid']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+        'SELECT ws_pat_id AS PatientID, ws_pat_name AS PatientName,ws_age AS Age, ws_adrs AS Address, ws_doj AS DateofAdmission FROM patient WHERE ws_pat_id = {}'. format(patientid))
+        data = cursor.fetchall()
+        if not len(data):
+            msg= "Patient with this Id does not exist"
+        print(data)
+        cursor.close()
+
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute(
+        'SELECT medicines.ws_med_name AS MedicineName, medicines.ws_qty AS QuantityIssued, meds_master.ws_rate AS RateofTheMedicine, (medicines.ws_qty*meds_master.ws_rate)AS Amount FROM medicines,meds_master WHERE medicines.ws_med_name=meds_master.ws_med_name and medicines.ws_pat_id = {}'. format(patientid))
+        data2 = cur.fetchall()
+        print(data2)
+        cur.close()
+
+        return render_template("includes/getPatientDetails.html",data=data, data2=data2 , msg=msg , button_msg="Issue Medicines")
+    else:
+
+        return render_template("includes/getPatientDetails.html", msg=msg)
 
 
 @app.route("/issueMeds", methods=["GET", "POST"])
@@ -151,5 +179,3 @@ def issueMeds():
 @app.route("/diagnostics", methods=["GET", "POST"])
 def diagnostics():
     return render_template("includes/diagnostics.html")
-
-
