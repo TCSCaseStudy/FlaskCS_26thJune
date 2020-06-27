@@ -85,8 +85,8 @@ def register():
                                (username, digest, timestamp, dept))
                 mysql.connection.commit()
                 msg='User Registered Successfully'
-            except Exception as msg:
-                # msg='Something went wrong. Please try again'
+            except:
+                msg='Something went wrong. Please try again'
                 return render_template("includes/register.html",msg=msg)
             finally:
                 cursor.close()
