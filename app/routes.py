@@ -12,7 +12,6 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 
-
 app.config['MYSQL_DB'] = 'hospital'
 mysql = MySQL(app)
 
@@ -155,14 +154,12 @@ def getPatientDetails():
         data = cursor.fetchall()
         if not len(data):
             msg= "Patient with this Id does not exist"
-        print(data)
         cursor.close()
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute(
         'SELECT medicines.ws_med_name AS MedicineName, medicines.ws_qty AS QuantityIssued, meds_master.ws_rate AS RateofTheMedicine, (medicines.ws_qty*meds_master.ws_rate)AS Amount FROM medicines,meds_master WHERE medicines.ws_med_name=meds_master.ws_med_name and medicines.ws_pat_id = {}'. format(patientid))
         data2 = cur.fetchall()
-        print(data2)
         cur.close()
 
         return render_template("includes/getPatientDetails.html",data=data, data2=data2 , msg=msg , button_msg="Issue Medicines")
