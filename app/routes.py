@@ -108,47 +108,47 @@ def welcome():
     return render_template("includes/welcome.html")
 
 
-@app.route("/createPatient",methods=["GET", "POST"])
+@app.route("/createPatient",methods=['GET', 'POST'])
 def createPatient():
     return render_template("includes/createPatient.html")
 
 
-@app.route("/updatePatient", methods=["GET", "POST"])
+@app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
     return render_template("includes/updatePatient.html")
 
 
-@app.route("/deletePatient", methods=["GET", "POST"])
+@app.route("/deletePatient", methods=['GET', 'POST'])
 def deletePatient():
     return render_template("includes/deletePatient.html")
 
 
-@app.route("/viewAllPatients", methods=["GET", "POST"])
+@app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
     return render_template("includes/viewAllPatients.html")
 
 
-@app.route("/searchPatients", methods=["GET", "POST"])
+@app.route("/searchPatients", methods=['GET', 'POST'])
 def searchPatients():
     return render_template("includes/searchPatients.html")
 
 
-@app.route("/patientBilling", methods=["GET", "POST"])
+@app.route("/patientBilling", methods=['GET', 'POST'])
 def patientBilling():
     return render_template("includes/patientBilling.html")
 
 
-@app.route("/getPatientDetails", methods=["GET", "POST"])
+@app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
     return render_template("includes/getPatientDetails.html")
 
 
-@app.route("/issueMeds", methods=["GET", "POST"])
+@app.route("/issueMeds", methods=['GET', 'POST'])
 def issueMeds():
     return render_template("includes/issueMeds.html")
 
 
-@app.route("/diagnostics", methods=["GET", "POST"])
+@app.route("/diagnostics", methods=["GET", 'POST'])
 def diagnostics():
     return render_template("includes/diagnostics.html")
 
