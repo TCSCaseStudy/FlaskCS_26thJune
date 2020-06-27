@@ -129,6 +129,8 @@ CREATE TABLE `patient` (
   `ws_discharge` date DEFAULT NULL,
   `ws_rtype` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_pat_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_pat_city` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`ws_ssn`,`ws_pat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -201,4 +203,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-26 23:23:41
+-- Dump completed on 2020-06-27 14:12:35
