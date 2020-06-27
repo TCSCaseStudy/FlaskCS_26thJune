@@ -3717,9 +3717,9 @@ input[type="button"].btn-block {
     display: none; }
 
 .navbar-light .navbar-brand {
-  color: rgba(0, 0, 0, 0.9); }
+  color: #2f89fc; }
   .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
-    color: rgba(0, 0, 0, 0.9); }
+    color: #2f89fc; }
 
 .navbar-light .navbar-nav .nav-link {
   color: rgba(0, 0, 0, 0.5); }
@@ -7996,7 +7996,7 @@ a {
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
-  color: #2f89fc; }
+  color: #000000; }
   a:hover, a:focus {
     text-decoration: none;
     color: #2f89fc;
@@ -8186,7 +8186,7 @@ h1, h2, h3, h4, h5,
   padding: 0;
   line-height: 1; }
   .navbar-brand span {
-    color: #2f89fc; }
+    color: #ff8000; }
 
 .hero-wrap {
   width: 100%;
