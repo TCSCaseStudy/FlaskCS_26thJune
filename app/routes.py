@@ -148,7 +148,7 @@ def issueMeds():
     return render_template("includes/issueMeds.html")
 
 
-@app.route("/diagnostics", methods=["GET", 'POST'])
+@app.route("/diagnostics", methods=['GET', 'POST'])
 def diagnostics():
     return render_template("includes/diagnostics.html")
 
