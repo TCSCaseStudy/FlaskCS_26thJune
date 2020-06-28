@@ -72,10 +72,12 @@ DROP TABLE IF EXISTS `medicines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicines` (
+  `record_id` int NOT NULL AUTO_INCREMENT,
   `ws_pat_id` int NOT NULL,
-  `ws_med_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_qty` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `ws_med_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ws_qty` int DEFAULT NULL,
+  PRIMARY KEY (`record_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,6 +86,7 @@ CREATE TABLE `medicines` (
 
 LOCK TABLES `medicines` WRITE;
 /*!40000 ALTER TABLE `medicines` DISABLE KEYS */;
+INSERT INTO `medicines` VALUES (1,1234,'Paracetamol',3);
 /*!40000 ALTER TABLE `medicines` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +192,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:18','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:30','r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:18','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 16:57:57','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -202,4 +205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-27 19:38:09
+-- Dump completed on 2020-06-27 22:45:06

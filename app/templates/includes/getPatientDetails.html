@@ -1,8 +1,71 @@
 {% extends "index.html" %}
+
 {% block content %}
 
 <!-- Add code inside this block -->
+<head>
+    <meta charset="utf-8">
+    <title>Patient Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+</head>
+<div class="login" style="margin-bottom:30px; margin-top:20px;">
+    <center><h1>Check for Patient</h1><center>
+    <form action="{{ url_for('getPatientDetails') }}" method="post">
+        <label for="patientid">
+        </label>
+        <input type="text" name="patientid" placeholder="Enter Patient Id" id="patientid" required>
+        <br><br>
+        <input type="submit" value="Fetch Details">
+          </form>
+    </div>
+    <center>
+    <div style="color:red;">
+        {{ msg }}
+    </div></center>
+      <div>
+        <center>
+          <table border="1" id="table">
+            <thead>
+              {% for item in data %}
+              <tr>
+                {% for i in item %}
+                <th>{{ i }}</th>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </thead>
+       {% for item in data %}
+           <tr> {% for i in item.values() %}
+               <td> {{ i }} </td>
+               {% endfor %}
+           </tr>
+       {% endfor %}
+       </table>
+       </center>
+       <br><br>
+       <center>
+         <table id="table">
+           <thead>
+             {% for item in data2 %}
+             <tr>
+               {% for i in item %}
+               <th>{{ i }}</th>
+               {% endfor %}
+             </tr>
+             {% endfor %}
+           </thead>
+      {% for item in data2 %}
+          <tr> {% for i in item.values() %}
+              <td> {{ i }} </td>
+              {% endfor %}
+          </tr>
+      {% endfor %}
+      </table>
 
+    <br><br>
+       </center>
+
+</div>
 {% endblock %}
-
-
