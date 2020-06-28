@@ -112,6 +112,7 @@ CREATE TABLE `meds_master` (
 
 LOCK TABLES `meds_master` WRITE;
 /*!40000 ALTER TABLE `meds_master` DISABLE KEYS */;
+INSERT INTO `meds_master` VALUES (1,'Paracetamol',10.00,10);
 /*!40000 ALTER TABLE `meds_master` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,6 +134,7 @@ CREATE TABLE `patient` (
   `ws_status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_pat_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_pat_city` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_pat_state` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`ws_ssn`,`ws_pat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -143,6 +145,7 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
+INSERT INTO `patient` VALUES (435151333,1234,'Mumbai',21,NULL,NULL,'r','Discharged','Sam','Mumbai',NULL);
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +195,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-28 12:34:08','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 17:16:19','r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-28 13:21:58','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 17:16:19','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -205,4 +208,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-28 18:05:37
+-- Dump completed on 2020-06-28 20:51:31
