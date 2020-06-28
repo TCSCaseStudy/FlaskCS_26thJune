@@ -74,10 +74,10 @@ DROP TABLE IF EXISTS `medicines`;
 CREATE TABLE `medicines` (
   `record_id` int NOT NULL AUTO_INCREMENT,
   `ws_pat_id` int NOT NULL,
-  `ws_med_name` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ws_med_name` varchar(80) NOT NULL,
   `ws_qty` int DEFAULT NULL,
   PRIMARY KEY (`record_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +192,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-28 11:28:26','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 17:16:19','r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-06-28 12:34:08','d'),('p','202cb962ac59075b964b07152d234b70','2020-06-27 14:07:25','p'),('r','202cb962ac59075b964b07152d234b70','2020-06-27 14:05:22','r'),('sam','202cb962ac59075b964b07152d234b70','2020-06-27 17:16:19','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -205,4 +205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-28 17:00:06
+-- Dump completed on 2020-06-28 18:05:37

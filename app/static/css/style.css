@@ -62,6 +62,16 @@ body {
 [tabindex="-1"]:focus {
   outline: 0 !important; }
 
+  .search-form {
+    width: 600px;
+    margin: 0 auto;
+    padding: 30px 0;
+    font-size: 15px;
+}
+
+.search-form .form-group {
+  margin-bottom: 20px;
+}
 hr {
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
@@ -183,7 +193,11 @@ caption {
   caption-side: bottom; }
 
 th {
-  text-align: inherit; }
+  text-align: inherit; 
+  text-align: inherit; 
+  background-color: #1370bd;
+  color: white;
+  }
 
 label {
   display: inline-block;
@@ -259,6 +273,10 @@ legend {
   line-height: inherit;
   color: inherit;
   white-space: normal; }
+
+.nav link.active a {
+    color: var(--blue);
+  }
 
 progress {
   vertical-align: baseline; }
