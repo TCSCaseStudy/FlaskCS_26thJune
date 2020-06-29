@@ -12,7 +12,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-# app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -144,19 +144,34 @@ def viewAllPatients():
     return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True)
 
 
+
 @app.route("/searchPatients", methods=['GET', 'POST'])
 def searchPatients():
+    
     cursor = mysql.connection.cursor()
-    #Fetching the Id of the patient and storing it in data variable
-    Id = request.form['Id']
-    cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
-    data = cursor.fetchall()
-    #If it founds the data with the given Id then pass the data to javascript file
-    if len(data) > 0:
-        return jsonify(data[0])
-    #else pass the error message
-    else:
-        return jsonify({'error': "No Data Found"})
+    #Fetching the Id of the patient and storing it in Id variable
+    if request.method == 'POST' and 'Id' in request.form:
+        Id = request.form["Id"]
+        
+        if Id.isdigit():   
+            
+            cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
+            patientData = cursor.fetchone()
+            
+            cursor.close()
+            if patientData:
+                
+                
+                flash("Data Found")
+                return render_template('includes/searchPatients.html',patientData=patientData,patientId=Id,msg="success")
+            #else pass the error message
+            else:
+                flash("No Data Found")
+        else:
+            flash("Please enter valid data")
+            return render_template("includes/searchPatients.html")    
+      
+    return render_template("includes/searchPatients.html") 
 
 
 @app.route("/patientBilling", methods=['GET', 'POST'])
