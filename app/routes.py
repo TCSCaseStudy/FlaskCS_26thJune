@@ -12,7 +12,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-app.config['MYSQL_PASSWORD'] = 'password'
+# app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -216,8 +216,6 @@ def getPatientDetails():
 #class for storing data entered
 class Medicine:
     mlist=[]
-    def __init__(self):
-        super(Medicine, self).__init__()
 
     def setMed(self,pt):
         self.mlist=pt
