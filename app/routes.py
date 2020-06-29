@@ -1,21 +1,26 @@
 from app import app
 from flask_mysqldb import MySQL
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import MySQLdb.cursors
 import config,random,hashlib
 import time,datetime
 
 
 app.secret_key = config.Config.SECRET_KEY
+# ------------------ RIYA ----------------------
 # for xampp
+# app.config['MYSQL_PASSWORD'] = ''
+# ----------------------------------------------
+# ------------------ MILI ----------------------
+# app.config['MYSQL_PASSWORD'] = 'password'
+# ----------------------------------------------
+# ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-
-
 app.config['MYSQL_DB'] = 'hospital'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# ----------------------------------------------
 mysql = MySQL(app)
-
 
 @app.route("/")
 @app.route('/login', methods=['GET', 'POST'])
@@ -33,7 +38,7 @@ def login():
             ts).strftime('%Y-%m-%d %H:%M:%S')
 
         # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.connection.cursor()
         cursor.execute(
             'SELECT * FROM userstore WHERE id = %s AND pass = %s', (username, digest))
         # Fetch one record and return result
@@ -76,7 +81,7 @@ def register():
         timestamp = datetime.datetime.fromtimestamp(
             ts).strftime('%Y-%m-%d %H:%M:%S')
         # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.connection.cursor()
         cursor.execute(
             'SELECT * FROM userstore WHERE id = %s AND pass = %s', (username, digest))
         # Fetch one record and return result
@@ -91,8 +96,8 @@ def register():
                                (username, digest, timestamp, dept))
                 mysql.connection.commit()
                 msg='User Registered Successfully'
-            except Exception as msg:
-                # msg='Something went wrong. Please try again'
+            except:
+                msg='Something went wrong. Please try again'
                 return render_template("includes/register.html",msg=msg)
             finally:
                 cursor.close()
@@ -114,32 +119,47 @@ def welcome():
     return render_template("includes/welcome.html")
 
 
-@app.route("/createPatient",methods=["GET", "POST"])
+@app.route("/createPatient",methods=['GET', 'POST'])
 def createPatient():
     return render_template("includes/createPatient.html")
 
 
-@app.route("/updatePatient", methods=["GET", "POST"])
+@app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
     return render_template("includes/updatePatient.html")
 
 
-@app.route("/deletePatient", methods=["GET", "POST"])
+@app.route("/deletePatient", methods=['GET', 'POST'])
 def deletePatient():
     return render_template("includes/deletePatient.html")
 
 
-@app.route("/viewAllPatients", methods=["GET", "POST"])
+@app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
-    return render_template("includes/viewAllPatients.html")
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_rtype FROM patient WHERE ws_status = 'Active' ")
+    patientData = cursor.fetchall()
+    print(patientData)
+    return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True)
 
 
-@app.route("/searchPatients", methods=["GET", "POST"])
+@app.route("/searchPatients", methods=['GET', 'POST'])
 def searchPatients():
-    return render_template("includes/searchPatients.html")
+    cursor = mysql.connection.cursor()
+    #Fetching the Id of the patient and storing it in data variable
+    Id = request.form['Id']
+    cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
+    data = cursor.fetchall()
+    #If it founds the data with the given Id then pass the data to javascript file
+    if len(data) > 0:
+        return jsonify(data[0])
+    #else pass the error message
+    else:
+        return jsonify({'error': "No Data Found"})
 
 
-@app.route("/patientBilling", methods=["GET", "POST"])
+@app.route("/patientBilling", methods=['GET', 'POST'])
 def patientBilling():
     return render_template("includes/patientBilling.html")
 
@@ -160,7 +180,7 @@ def getPatientDetails():
             msg= "Patient with this Id does not exist"
         cursor.close()
 
-        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur = mysql.connection.cursor()
         cur.execute(
         'SELECT medicines.ws_med_name AS MedicineName, medicines.ws_qty AS QuantityIssued, meds_master.ws_rate AS RateofTheMedicine, (medicines.ws_qty*meds_master.ws_rate)AS Amount FROM medicines,meds_master WHERE medicines.ws_med_name=meds_master.ws_med_name and medicines.ws_pat_id = {}'. format(patientid))
         data2 = cur.fetchall()
@@ -196,7 +216,7 @@ class Medicine:
 #Object Creation
 obj = Medicine()
 
-@app.route("/issueMeds", methods=["GET", "POST"])
+@app.route("/issueMeds", methods=['GET', 'POST'])
 def issueMeds():
     msg=""
     patientid = session.get('patientid', None)
@@ -273,6 +293,6 @@ def medIssueSuccess():
             return str(e)
     return render_template("includes/medIssueSuccess.html")
 
-@app.route("/diagnostics", methods=["GET", "POST"])
+@app.route("/diagnostics", methods=['GET', 'POST'])
 def diagnostics():
     return render_template("includes/diagnostics.html")

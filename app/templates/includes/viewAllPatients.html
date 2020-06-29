@@ -1,8 +1,41 @@
 {% extends "index.html" %}
 {% block content %}
-
 <!-- Add code inside this block -->
+<br><br>
+<h3 style="text-align: center; color: rgb(24, 24, 221);"><b>Patients Details</b></h3>
+<br><br>
+<div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Patient Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Age</th>
+                <th scope="col">Address</th>
+                <th scope="col">DOJ</th>
+                <th scope="col">Type of Room</th>
+            </tr>
+        </thead>
+        <tbody>
 
+            <!-- Construct the rest of courses here -->
+            {% for data in patientData %}
+            <tr>
+                <td scope='row'>{{ data["ws_pat_id"] }}</td>
+                <td>{{ data["ws_pat_name"] }}</td>
+                <td>{{ data["ws_age"] }}</td>
+                <td>{{ data["ws_adrs"] }}</td>
+                <td>{{ data["ws_doj"] }}</td>
+                <td>{{ data["ws_rtype"] }}</td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <br><br>
+    <br>
+</div>
 {% endblock %}
 
 
