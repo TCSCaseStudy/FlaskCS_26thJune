@@ -1,6 +1,90 @@
 {% extends "index.html" %}
 {% block content %}
 
-<!-- Add code inside this block -->
+<head>
+    <meta charset="utf-8">
+    <title>Patient Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <script>
+      function fun(){
+        document.getElementById("form").style.display="";
+      }
 
+      function success(){
+        window.location.replace("medIssueSuccess");
+      }
+    </script>
+
+</head>
+<!--  Checking if status is not null-->
+{% if status|length %}
+      <center>
+        <br>
+        <!--  Status showing if medicine is available or not-->
+        <div style="color:{{color}}">{{status}}</div></center>
+        <br>
+      <center>
+        <!--  Table for Displaying Added Medicines-->
+        <table border="1" id="table">
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Quantity</th>
+              <th>Rate</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          {% for item in data %}
+           <tr>
+             {% for i in item %}
+               <td> {{ i }} </td>
+               {% endfor %}
+           </tr>
+         {% endfor %}
+     </table>
+     </center>
+     <br><br>
+     <center>
+       <!--  Update Button -->
+       <button class="btn btn-primary" onclick="success()">Update</button><br><br>
+       <!--Button for adding more medicines-->
+      <button  class="btn btn-primary" onclick="fun()">Add</button>
+      <br><br>
+      </center>
+
+      <!--  Hidden form visible only when Add button is clicked -->
+     <div class="login" id="form"  style="margin-bottom:30px; margin-top:20px; display:none;">
+         <center><h1>Add Medicine for PatientID:{{patientid}}</h1><center>
+         <form action="" method="post">
+             <label for="medicine">
+             </label>
+             <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" required>
+             <br><br>
+             <label for="qty">
+             </label>
+             <input type="text" name="qty" placeholder="Enter Quantity" id="qty" required>
+             <input type="submit" value="Check Availability">
+               </form>
+         </div>
+<!-- If Status is blank i.e page loads for the first time-->
+{% else %}
+
+    <div class="login" style="margin-bottom:30px; margin-top:20px;">
+        <center><h1>Enter Medicine for PatientID:{{patientid}}</h1></center>
+          <center>
+        <form action="" method="post">
+            <label for="medicine">
+            </label>
+            <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" required>
+            <br><br>
+            <label for="qty">
+            </label>
+            <input type="text" name="qty" placeholder="Enter Quantity" id="qty" required>
+            <input type="submit" value="Check Availability">
+              </form>
+              </center>
+        </div>
+{% endif %}
 {% endblock %}
