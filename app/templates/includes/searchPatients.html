@@ -1,91 +1,76 @@
 {% extends "index.html" %}
 {% block content %}
-<!-- Add code inside this block -->
-<!-- <div class="container">
-  <div class = "form-group">
-<form name="myForm"  action="">
-  <br><br>
-  <div class = "form-row">
-     <label for="Id"><b>Patient Id</b> </label> 
-    <input type="number" name="Id" placeholder="Enter Patient ID" id="Id" required>
-    <input type="button" value="Search" onclick="validateForm()">
-  </div> 
-  <br><br>
-  <div class= "form-row">
-    <label for="name"><b>Patient Name</b></label>
-    <input type="text" placeholder="" name="name" id="name">
-  </div>
-  <br>
-  <div class= "form-row">
-    <label for="age"><b>Patient Age</b></label>
-    <input type="text" placeholder="" name="age" id="age">
-  </div>
-  <br>
-  <div class= "form-row">
-    <label for="doj"><b>Date of Admission</b></label>
-    <input type="text" placeholder="" name="doj" id="doj">
-  </div>
-  <br>
-  <div class= "form-row">
-    <label for="bed_type"><b>Type of Bed</b></label>
-    <input type="text" placeholder="" name="bed_type" id="bed_type">
-  </div>
-  <br>
-  <div class= "form-row">
-    <label for="address"><b>Address</b></label>
-    <textarea rows="3" id="address"></textarea>
-  </div>
-  <br>
-  <div class= "form-row">
-    <label for="city"><b>City</b></label>
-    <input type="text" placeholder="" name="city" id="city">
-  </div>
-</form>
-</div>
-</div> -->
+
 <div class="search-form">
-    <form name="myForm" id="myForm">
-        <h2>Search </h2>
-        <div class="form-group">
-            <div class="row">
-                <div class="col"><input type="number" class="form-control" name="Id" placeholder="Enter Patient Id"
-                        required></div>
-                <div class="col"><input type="button" id="button" class="btn btn-success btn-lg btn-block"
-                        value="Search" onclick="validateForm()"></div>
-            </div>
-            <div id="successAlert" class="alert alert-success" role="alert" style="display: none;"></div>
-            <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none;"></div>
-        </div>
-        <div class="form-group">
-            <label for="name"><b>Patient Name</b></label>
-            <input type="text" class="form-control" id="name">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="age"><b>Patient Age</b></label>
-            <input type="text" class="form-control" id="age">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="doj"><b>Date of Admission </b></label>
-            <input type="text" class="form-control" id="doj">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="bed_type"><b>Type of Bed</b></label>
-            <input type="text" class="form-control" id="bed_type">
-        </div>
-        <div class="form-group">
-            <label for="address"><b>Address</b></label>
-            <input type="text" class="form-control" id="address">
-        </div>
-        <div class="form-group">
-            <label for="city"><b>City</b></label>
-            <input type="text" class="form-control" id="city">
-        </div>
-
+    <form  id="myForm" action="" method="POST" class="design" >
+        <br><br>
+        <h2>Search Patient Details<span class="float-right"><a href="{{ url_for('searchPatients')}}" style="text-decoration: none;color:rgb(235, 49, 49);">Reset Page</a></span></h2>
+        <hr style="clear: both;">
+        <input type="text" placeholder="Enter Patient Id" id="Id" name="Id" value="{{ patientId }}" required>
+        <button type="submit"><i class="fa fa-search"></i></button>
+        <!-- <div class="form-group"> -->
+            <!-- <div class="row"> -->
+                <!-- <div class="col"> -->
+                    <!-- <input type="number" id="Id" name="Id" placeholder="Enter Patient Id" value="{{ patientId }}" -->
+                        <!-- required> -->
+                <!-- </div> -->
+                <!-- <div class="col"> -->
+                    <!-- <button type="submit"><i class="fa fa-search"></i></button> -->
+            <!-- </div> -->
+        
+        <!-- </div> -->
+        <br><br>
     </form>
+    
+    {% for message in get_flashed_messages() %}
+        {% if msg=="success" %}
+            <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
+        {% else %}
+        
+            <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
 
+        {% endif %}
+
+    {% endfor %}
+    
+    
+    
+    {% if patientData %}
+        <div class="search-form">
+            <form>
+                <div class="form-group">
+                    <label for="name"><b>Patient Name</b></label>
+                    <div class="form-control">{{ patientData['ws_pat_name'] }}</div>
+                </div>
+                <br>
+            <div class="form-group">
+                <label for="age"><b>Patient Age</b></label>
+                <div class="form-control">{{ patientData['ws_age'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="doj"><b>Date of Admission </b></label>
+                <div class="form-control">{{ patientData['ws_doj'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="bed_type"><b>Type of Bed</b></label>
+                <div class="form-control">{{ patientData['ws_rtype'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="address"><b>Address</b></label>
+                <div class="form-control">{{ patientData['ws_adrs'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="city"><b>City</b></label>
+                <div class="form-control">{{ patientData['ws_pat_city'] }}</div>
+            </div>
+                
+            </form>
+        </div>
+    {% endif %}
 
 </div>
 
