@@ -147,34 +147,131 @@ def patientBilling():
 @app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
     msg=""
+    button_msg=""
     if request.method == 'POST':
         patientid = request.form['patientid']
+        session['patientid'] = patientid
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
         'SELECT ws_pat_id AS PatientID, ws_pat_name AS PatientName,ws_age AS Age, ws_adrs AS Address, ws_doj AS DateofAdmission FROM patient WHERE ws_pat_id = {}'. format(patientid))
         data = cursor.fetchall()
+        #if no records fetched display Id does not exist
         if not len(data):
             msg= "Patient with this Id does not exist"
-        print(data)
         cursor.close()
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute(
         'SELECT medicines.ws_med_name AS MedicineName, medicines.ws_qty AS QuantityIssued, meds_master.ws_rate AS RateofTheMedicine, (medicines.ws_qty*meds_master.ws_rate)AS Amount FROM medicines,meds_master WHERE medicines.ws_med_name=meds_master.ws_med_name and medicines.ws_pat_id = {}'. format(patientid))
         data2 = cur.fetchall()
-        print(data2)
+
+        #Fetching Data of Header for medicines issued
+        res = [ele for key in data2 for ele in key]
+        medhead=[i for n, i in enumerate(res) if i not in res[:n]]
         cur.close()
 
-        return render_template("includes/getPatientDetails.html",data=data, data2=data2 , msg=msg , button_msg="Issue Medicines")
+        if len(msg)==0:
+            button_msg="Issue medicines"
+        return render_template("includes/getPatientDetails.html",data=data, data2=data2 , medhead=medhead, msg=msg , button_msg=button_msg)
     else:
 
-        return render_template("includes/getPatientDetails.html", msg=msg)
+        return render_template("includes/getPatientDetails.html", msg=msg , button_msg=button_msg)
 
+
+#class for storing data entered
+class Medicine:
+    mlist=[]
+    def __init__(self):
+        super(Medicine, self).__init__()
+
+    def setMed(self,pt):
+        self.mlist=pt
+
+    def getMed(self):
+        return self.mlist
+
+    def addmed(self,med):
+        self.mlist.append(med)
+
+#Object Creation
+obj = Medicine()
 
 @app.route("/issueMeds", methods=["GET", "POST"])
 def issueMeds():
-    return render_template("includes/issueMeds.html")
+    msg=""
+    patientid = session.get('patientid', None)
+    if request.method == 'POST':
+        status=""
+        medname = request.form['medname']
+        qty = request.form['qty']
+        qty= int(qty)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+        'SELECT ws_med_name AS MedicineName, ws_med_qty AS Quantity,ws_rate AS Rate, ws_rate AS Amount FROM meds_master WHERE ws_med_name =  %s', [medname])
+        med = cursor.fetchall()
+        cursor.close()
+        #Check if the medicine exists in database
+        if med:
+            #Checking if required medicine quantity is available
+            if med[0]['Quantity']>qty:
+                status='Available'
+                med[0]['Quantity']=qty
+                med[0]['Amount']=qty*med[0]['Rate']
+                msg="Click to Add More Medicines"
 
+                #Adding and storing in object for record
+                obj.addmed([med[0]['MedicineName'],med[0]['Quantity'],med[0]['Rate'],med[0]['Amount']])
+
+                return render_template("includes/issueMeds.html",patientid=patientid, status=status, color="green", data=obj.getMed(), msg=msg, medname=medname)
+            else:
+
+                #If not available display not Available
+                status='Not Available'
+                msg="Click to Add Another Medicine"
+                return render_template("includes/issueMeds.html",patientid=patientid, status=status, color="red", data=obj.getMed(), msg=msg)
+    else:
+        return render_template("includes/issueMeds.html", patientid=patientid)
+
+#If medicines are isssued Successfully load medIssueSuccess
+@app.route("/medIssueSuccess")
+def medIssueSuccess():
+    patientid = session.get('patientid', None)
+
+    #fetching the value of object
+    l=obj.getMed()
+
+    #Iterating to find out name and quantity required for each medicine in object
+    for medicine in l:
+        name=medicine[0]
+        reqQty=int(medicine[1])
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        #Fetching Medicine Quantity in database
+        cursor.execute(
+        'SELECT ws_med_qty AS Quantity FROM meds_master WHERE ws_med_name =  %s', [name])
+        med = cursor.fetchall()
+        cursor.close()
+
+        #Storing fetched quantity
+        fetchedQuantity=int(med[0]['Quantity'])
+
+        #Calculating new medicine quantity to be updated in database
+        updatedQuantity=fetchedQuantity-reqQty
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        try:
+            #Updating table meds_master with quantity
+            cursor.execute('UPDATE meds_master SET ws_med_qty = %s WHERE ws_med_name  =  %s' , (updatedQuantity,name))
+            mysql.connection.commit()
+        except Exception as e:
+            return str(e)
+
+        try:
+            #Updating medicines for patients in meds table
+            cursor.execute('INSERT INTO medicines(ws_pat_id,ws_med_name,ws_qty) VALUES(%s,%s,%s)', (patientid,name,reqQty))
+            mysql.connection.commit()
+        except Exception as e:
+            return str(e)
+    return render_template("includes/medIssueSuccess.html")
 
 @app.route("/diagnostics", methods=["GET", "POST"])
 def diagnostics():
