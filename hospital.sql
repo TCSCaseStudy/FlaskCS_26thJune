@@ -48,11 +48,19 @@ DROP TABLE IF EXISTS `diagnostics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `diagnostics` (
+	`ws_test_no` int PRIMARY KEY AUTO_INCREMENT ,
   `ws_pat_id` int NOT NULL,
+<<<<<<< Updated upstream
   `ws_diagn` varchar(100) DEFAULT NULL,
   `ws_test_id` int NOT NULL,
   PRIMARY KEY (`ws_pat_id`,`ws_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+=======
+  `ws_diagn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_test_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+>>>>>>> Stashed changes
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

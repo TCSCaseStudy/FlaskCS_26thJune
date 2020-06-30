@@ -3,4 +3,91 @@
 
 <!-- Add code inside this block -->
 
+<div>
+    <h2 style="text-align: center; color: rgb(6, 6, 80);">Diagnostic Screen</h2>
+    {% if patientTests %}
+        <div>
+            <form action=""  style="margin:auto;max-width:500px;">
+                <br><br>
+                <h5 style="text-align: center;">Diagnostics Conducted</h5>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name of the Test</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for test in patientTests %}
+                        <tr>
+                            <td scope='row'>{{ test["ws_test_name"] }}</td>
+                            <td>{{ test["ws_test_chrg"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> 
+                       
+            {% for message in get_flashed_messages() %}
+                <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
+                
+            {% endfor %} 
+            </form>
+         
+        </div>
+        
+    {% endif %}
+    
+    <div class="search-form">
+    
+
+        <form  action="" method="POST" style="margin:auto;max-width:500px;">
+        {% if msg!="success" %}
+            <select name="tests" id="tests" style="text-align-last:center;width:400px;height:50px; text-align: center;" required>
+                
+                {% for test_name in test_names %}
+                    <option value="{{ test_name }}">{{ test_name }}</option>
+                {% endfor %}
+            
+            </select>
+                <button type="submit" class="btn btn-primary" style="background-color: rgb(26, 26, 170); border-radius: 2px; font-size: 20px;">Add </button>
+            <br><br><br>
+        {% else %}
+        
+            <a href="{{ url_for('diagnostics',patId=Id)}}" style="text-decoration: underline;color:rgb(202, 48, 21); float: right;"><b>Add another test?</b></a>
+            <br><br><br>
+            {% endif %} 
+        </form>
+        
+    
+    
+    {% if addedTests  %}
+    
+        <div>
+            <form action="{{ url_for('process') }}"  method="POST" style="margin:auto;max-width:500px;">
+                <h5 style="text-align: center;">Added Diagnostics</h5>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name of the Test</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for test in addedTests %}
+                        <tr>
+                            <td scope='row'>{{ test['test_name'] }}</td>
+                            <td>{{ test['test_charge'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> 
+                <button type="submit" class="btn btn-primary" style="background-color: rgb(26, 26, 170); border-radius: 2px; font-size: 20px;">Update </button> 
+            </form>
+        </div>
+     
+    {% endif %}
+</div>
+</div>
 {% endblock %}

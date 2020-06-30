@@ -5,7 +5,6 @@ import MySQLdb.cursors
 import config,random,hashlib
 import time,datetime
 
-
 app.secret_key = config.Config.SECRET_KEY
 # ------------------ RIYA ----------------------
 # for xampp
@@ -26,6 +25,7 @@ mysql = MySQL(app)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     logout()
+    popSession()
     # Output message if something goes wrong...
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -70,6 +70,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     # Output message if something goes wrong...
+    popSession()
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'dept' in request.form:
         username = request.form['username']
@@ -107,15 +108,17 @@ def register():
 @app.route("/logout")
 def logout():
     # Remove session data, this will log the user out
-   session.pop('loggedin', None)
-   session.pop('p_login', False)
-   session.pop('d_login', False)
-   session.pop('r_login', False)
-   return redirect(url_for('login'))
+    popSession()
+    session.pop('loggedin', None)
+    session.pop('p_login', False)
+    session.pop('d_login', False)
+    session.pop('r_login', False)
+    return redirect(url_for('login'))
 
 
 @app.route("/welcome")
 def welcome():
+    popSession()
     return render_template("includes/welcome.html")
 
 
@@ -136,6 +139,7 @@ def deletePatient():
 
 @app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
+    popSession()
     cursor = mysql.connection.cursor()
     cursor.execute(
         "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_rtype FROM patient WHERE ws_status = 'Active' ")
@@ -147,7 +151,7 @@ def viewAllPatients():
 
 @app.route("/searchPatients", methods=['GET', 'POST'])
 def searchPatients():
-    
+    popSession()
     cursor = mysql.connection.cursor()
     #Fetching the Id of the patient and storing it in Id variable
     if request.method == 'POST' and 'Id' in request.form:
@@ -176,11 +180,13 @@ def searchPatients():
 
 @app.route("/patientBilling", methods=['GET', 'POST'])
 def patientBilling():
+    popSession()
     return render_template("includes/patientBilling.html")
 
 
 @app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
+    popSession()
     msg=""
     button_msg=""
     if request.method == 'POST':
@@ -285,6 +291,7 @@ def medIssueSuccess():
         med = cursor.fetchall()
         cursor.close()
 
+<<<<<<< Updated upstream
         #Storing fetched quantity
         fetchedQuantity=int(med[0]['Quantity'])
 
@@ -305,7 +312,98 @@ def medIssueSuccess():
         except Exception as e:
             return str(e)
     return render_template("includes/medIssueSuccess.html")
+=======
+@app.route("/getPatientDiagnosticDetails", methods=['GET', 'POST'])
+def getPatientDiagnosticDetails():
+    popSession()
+    if request.method == 'POST' and 'Id' in request.form:
+        Id = request.form["Id"]
+        if Id.isdigit():
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT p.ws_pat_id,p.ws_pat_name,p.ws_age,p.ws_adrs,p.ws_doj,p.ws_pat_city,p.ws_pat_state,m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s",(Id,))
+            patientData = cursor.fetchone()
+            
+            if patientData:
 
-@app.route("/diagnostics", methods=['GET', 'POST'])
-def diagnostics():
-    return render_template("includes/diagnostics.html")
+                return render_template('includes/getPatientDiagonsticDetails.html',patientData=patientData)
+
+            else:
+                cursor.execute("SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
+                patientData = cursor.fetchone()
+                if patientData:
+                    patientData['ws_med_name']=''
+                    return render_template('includes/getPatientDiagonsticDetails.html',patientData=patientData)
+                else:
+                    flash("Patient data doesn't exist")
+        else:
+            flash("Please Enter Valid Data")
+            return render_template("includes/getPatientDiagonsticDetails.html")
+    return render_template("includes/getPatientDiagonsticDetails.html")
+
+
+>>>>>>> Stashed changes
+
+@app.route("/diagnostics/<patId>/<msg>")
+@app.route("/diagnostics/<patId>/", methods=['GET', 'POST'] ,defaults= {'msg': ""})
+def diagnostics(patId,msg):
+    if msg=="success":
+        flash("Diagnostic Added Successfully")
+    else:
+        msg="Not"
+   
+    if "addedTests" not in session:
+        session["addedTests"]=[]
+    
+    if patId:
+        id = patId
+        cursor = mysql.connection.cursor()
+        if "diagnosticsData" not in session:
+            session["diagnosticsData"]=[]
+            cursor.execute('select ws_test_name,ws_test_id,ws_test_chrg from tests')
+            session["diagnosticsData"] = cursor.fetchall()
+        test_names=[]
+        for x in session["diagnosticsData"]:
+            test_names.append(x['ws_test_name'])
+
+        cursor.execute("SELECT t.ws_test_name,t.ws_test_chrg FROM diagnostics d, tests t WHERE d.ws_test_id=t.ws_test_id AND d.ws_pat_id=%s",(id,))
+        patientTests=cursor.fetchall()
+        
+        if request.method=="POST" and 'tests' in request.form :
+
+            test= request.form.get('tests')
+            
+            for x in session["diagnosticsData"]:
+                if x['ws_test_name']==test:
+                    test_id = x['ws_test_id']
+                    test_charge = x['ws_test_chrg']
+            for x in session["addedTests"]:
+                if test==x['test_name']:
+                    break
+            else:
+                session["addedTests"] += [{'pat_id':id,'test_name':test,'test_id':test_id,'test_charge':test_charge}]
+            print(session["addedTests"])
+
+        return render_template("includes/diagnostics.html", Id = id, test_names=test_names,msg=msg,patientTests=patientTests,addedTests=session["addedTests"])
+
+@app.route('/process', methods =['POST'])
+def process():
+    cursor = mysql.connection.cursor()
+    if request.method=="POST"  :
+        try:
+            for x in session["addedTests"]:
+                id=x['pat_id']
+                cursor.execute('INSERT INTO diagnostics(ws_pat_id,ws_diagn,ws_test_id) VALUES(%s,%s,%s)',(x['pat_id'],x['test_name'],x['test_id']))
+                mysql.connection.commit()
+            msg="success"
+            
+        except:
+            msg="something went wrong"
+        finally:
+            cursor.close() 
+    popSession()
+    return redirect("/diagnostics/"+id+"/"+msg)
+
+def popSession():
+    session.pop("diagnosticsData",None)
+    session.pop("addedTests",None)
+    
