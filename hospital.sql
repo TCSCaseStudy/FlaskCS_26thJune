@@ -28,7 +28,7 @@ CREATE TABLE `bills` (
   `rbill` float(10,2) NOT NULL,
   `pid` int NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,17 +50,13 @@ DROP TABLE IF EXISTS `diagnostics`;
 CREATE TABLE `diagnostics` (
 	`ws_test_no` int PRIMARY KEY AUTO_INCREMENT ,
   `ws_pat_id` int NOT NULL,
-<<<<<<< Updated upstream
   `ws_diagn` varchar(100) DEFAULT NULL,
   `ws_test_id` int NOT NULL,
   PRIMARY KEY (`ws_pat_id`,`ws_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-=======
   `ws_diagn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_test_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
->>>>>>> Stashed changes
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +81,7 @@ CREATE TABLE `medicines` (
   `ws_med_name` varchar(80) NOT NULL,
   `ws_qty` int DEFAULT NULL,
   PRIMARY KEY (`record_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +107,7 @@ CREATE TABLE `meds_master` (
   `ws_rate` float(10,2) DEFAULT NULL,
   `ws_med_qty` int DEFAULT NULL,
   PRIMARY KEY (`ws_med_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +139,7 @@ CREATE TABLE `patient` (
   `ws_pat_name` varchar(50) DEFAULT NULL,
   `ws_pat_city` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`ws_ssn`,`ws_pat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,7 +164,7 @@ CREATE TABLE `tests` (
   `ws_test_name` varchar(100) DEFAULT NULL,
   `ws_test_chrg` float(10,2) DEFAULT NULL,
   PRIMARY KEY (`ws_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +189,7 @@ CREATE TABLE `userstore` (
   `ts` timestamp NULL DEFAULT NULL,
   `type` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
