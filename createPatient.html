@@ -1,0 +1,80 @@
+{% extends "index.html" %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/createPatient.css') }}">
+    
+  
+    
+    </head>
+<!-- Add code inside this block -->
+
+
+<div class="updatePatient1">
+    <h1 class="heading">Create Patient Record</h1>
+   
+<form action="/createPatient" method="post">
+    
+    
+    <label for="ssnid">SSN ID</label>  
+    <input type="text" name="ssnid" id="ssnid" minlength="9" maxlength="9" pattern="[0-9]{9,9}"  required oninvalid="this.setCustomValidity('Please Fill 9 digits SSN ID ')" oninput="('')"><br> 
+    
+    
+    <label for="name">Name</label> : 
+    <input type="text" name="name" id="name" required pattern="^[A-Za-z ]+$" ><br> 
+    
+    
+    <label for="Age">Age</label> 
+    <input type="number" name="Age" id="Age" required><br>
+    
+    <label for="doa">Date of Admission</label> 
+    <input type="date" name="doa" id="doa" required><br>
+    
+    <label for="bedType">Type of room</label>
+        
+            <select name="bedType" id="bedType" >
+                <option value="General Ward">General Ward</option>
+                <option value="Semi Sharing">Semi Sharing</option>
+                <option value="Single Room">Single Room</option>
+        
+            </select><br>
+        
+    
+    
+    <label for="Address">Address</label>
+    <input type="text" name="Address" required><br>
+    
+    
+    <label for="City">City</label>
+    <input type="text" name="City" required pattern="^[A-Za-z ]+$"><br>
+    
+    
+    <label for="State">State</label>
+    <input type="text" name="State" id="State" required pattern="^[A-Za-z ]+$"><br>
+    
+    
+    <input id="submitbtn" type="submit" value="Create Patient">
+    </form>
+</div>
+
+
+
+
+{% if msg=="User Created Sucessfully" %}
+<script>
+    alert("Patient Record Added Sucessfully")
+</script>
+{% endif %}
+
+{% if msg=="An error occured" %}
+<script>
+    alert("An error occured Please try Again")
+</script>
+{% endif %}
+
+{%endblock%}
+
+
+
+
+
+
