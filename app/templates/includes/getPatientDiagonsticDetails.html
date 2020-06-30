@@ -1,0 +1,64 @@
+{% extends "index.html" %}
+{% block content %}
+<div>
+<div class="search-form">
+    <form  id="myForm" action="" method="POST" class="design" >
+        <br><br>
+        <h2>Search Patient Diagonstic Details<span class="float-right"><a href="{{ url_for('getPatientDiagnosticDetails')}}" style="text-decoration: none;color:rgb(235, 49, 49);">Reset Page</a></span></h2>
+        <hr style="clear: both;">
+        <input type="text" placeholder="Enter Patient Id" id="Id" name="Id" required>
+        <button type="submit"><i class="fa fa-search"></i></button>
+       
+        <br><br>
+    </form>
+    
+    {% for message in get_flashed_messages() %}
+
+            <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
+
+    {% endfor %}
+</div>
+<div>
+    <br><br><br>
+    {% if patientData %}
+    <div>
+        
+        <form action="diagnostics/{{patientData.ws_pat_id}}/" method="GET" style="margin:auto;max-width:900px;">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Patient Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">DOJ</th>
+                    <th scope="col">Medicines Issued</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td scope='row'>{{ patientData["ws_pat_id"] }}</td>
+                    <td>{{ patientData["ws_pat_name"] }}</td>
+                    <td>{{ patientData["ws_age"] }}</td>
+                    <td>{{ patientData["ws_adrs"] }} , {{ patientData["ws_pat_city"] }} , {{ patientData["ws_pat_state"] }}</td>
+                    <td>{{ patientData["ws_doj"] }}</td>
+                    <td>{{ patientData["ws_med_name"] }}</td>
+    
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <button type="submit" class="btn btn-primary" style="background-color: blue; border-radius: 2px;">Add Diagnostic</button>
+
+        <br><br>
+        </form>
+        <br>
+    </div>
+
+    {% endif %}
+</div>
+      
+   
+</div>
+
+{% endblock %}
