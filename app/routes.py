@@ -331,10 +331,8 @@ def issueMeds():
         med = cursor.fetchall()
         cursor.close()
         #Check if the medicine exists in database
-        print("Med= ",med)
-        print("Med= ",type(med))
         if len(med)!=0:
-            print("Med inside if= ",med)
+
             #Checking if required medicine quantity is available
             if med[0]['Quantity']>qty:
                 status='Available'
