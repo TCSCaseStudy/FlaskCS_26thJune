@@ -187,7 +187,8 @@ def updatePatient():
             return render_template("includes/updatePatient.html", pid=res['ws_pat_id'],name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'],msg=msg,message=message,timestamp=timestamp)
         else:
             flash("Patient not registered. Please check the ID")
-    return render_template("includes/updatePatient.html", msg=msg, message=message,timestamp=timestamp)
+    flash("Enter Patient ID only")
+    return render_template("includes/updatePatient.html", msg='info', message=message,timestamp=timestamp)
 
 
 
