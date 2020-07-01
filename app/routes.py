@@ -11,7 +11,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-# app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -193,7 +193,7 @@ def deletePatient():
     if request.method == 'POST' and 'Id' in request.form:
         Id = request.form["Id"]
         session['id']=Id
-        if Id.isdigit():   
+        if Id.isdigit():
             cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
             cursor.close()
@@ -205,8 +205,8 @@ def deletePatient():
                 flash("No Patient Data Found")
         else:
             flash("Please enter a valid ID")
-            return render_template("includes/deletePatient.html")    
-    return render_template("includes/deletePatient.html") 
+            return render_template("includes/deletePatient.html")
+    return render_template("includes/deletePatient.html")
 
 
 @app.route("/delete", methods=['POST'])
@@ -223,7 +223,7 @@ def delete():
         return render_template('includes/deletePatient.html', msg="success")
 
 
-    
+
 @app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
     popSession()
@@ -242,7 +242,7 @@ def searchPatients():
     #Fetching the Id of the patient and storing it in Id variable
     if request.method == 'POST' and 'Id' in request.form:
         Id = request.form["Id"]
-        if Id.isdigit():   
+        if Id.isdigit():
             cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
             cursor.close()
@@ -254,9 +254,9 @@ def searchPatients():
                 flash("No Data Found")
         else:
             flash("Please enter valid data")
-            return render_template("includes/searchPatients.html")    
-      
-    return render_template("includes/searchPatients.html") 
+            return render_template("includes/searchPatients.html")
+
+    return render_template("includes/searchPatients.html")
 
 
 @app.route("/patientBilling", methods=['GET', 'POST'])
@@ -331,7 +331,8 @@ def issueMeds():
         med = cursor.fetchall()
         cursor.close()
         #Check if the medicine exists in database
-        if med:
+        if len(med)!=0:
+
             #Checking if required medicine quantity is available
             if med[0]['Quantity']>qty:
                 status='Available'
@@ -343,12 +344,12 @@ def issueMeds():
                 obj.addmed([med[0]['MedicineName'],med[0]['Quantity'],med[0]['Rate'],med[0]['Amount']])
 
                 return render_template("includes/issueMeds.html",patientid=patientid, status=status, color="green", data=obj.getMed(), msg=msg, medname=medname)
-            else:
+        else:
 
-                #If not available display not Available
-                status='Not Available'
-                msg="Click to Add Another Medicine"
-                return render_template("includes/issueMeds.html",patientid=patientid, status=status, color="red", data=obj.getMed(), msg=msg)
+            #If not available display not Available
+            status='Not Available'
+            msg="Click to Add Another Medicine"
+            return render_template("includes/issueMeds.html",patientid=patientid, status=status, color="red", data=obj.getMed(), msg=msg)
     else:
         return render_template("includes/issueMeds.html", patientid=patientid)
 
@@ -401,19 +402,24 @@ def getPatientDiagnosticDetails():
         Id = request.form["Id"]
         if Id.isdigit():
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT p.ws_pat_id,p.ws_pat_name,p.ws_age,p.ws_adrs,p.ws_doj,p.ws_pat_city,p.ws_pat_state,m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
+            cursor.execute("SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
             if patientData:
+                cursor.execute("SELECT m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
+                medicine=cursor.fetchall()
+                patientData['ws_med_name']=''
+                if medicine:
+                    med=[]
+                    for x in medicine:
+                        med.append(x['ws_med_name'])
+
+                    patientData['ws_med_name']=med
+                cursor.close()
                 return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
+
             else:
-                cursor.execute(
-                    "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
-                patientData = cursor.fetchone()
-                if patientData:
-                    patientData['ws_med_name'] = ''
-                    return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
-                else:
-                    flash("Patient data doesn't exist")
+                cursor.close()
+                flash("Patient data doesn't exist")
         else:
             flash("Please Enter Valid Data")
             return render_template("includes/getPatientDiagonsticDetails.html")
@@ -427,10 +433,10 @@ def diagnostics(patId,msg):
         flash("Diagnostic Added Successfully")
     else:
         msg="Not"
-   
+
     if "addedTests" not in session:
         session["addedTests"]=[]
-    
+
     if patId:
         id = patId
         cursor = mysql.connection.cursor()
@@ -444,11 +450,11 @@ def diagnostics(patId,msg):
 
         cursor.execute("SELECT t.ws_test_name,t.ws_test_chrg FROM diagnostics d, tests t WHERE d.ws_test_id=t.ws_test_id AND d.ws_pat_id=%s",(id,))
         patientTests=cursor.fetchall()
-        
+
         if request.method=="POST" and 'tests' in request.form :
 
             test= request.form.get('tests')
-            
+
             for x in session["diagnosticsData"]:
                 if x['ws_test_name']==test:
                     test_id = x['ws_test_id']
@@ -472,15 +478,14 @@ def process():
                 cursor.execute('INSERT INTO diagnostics(ws_pat_id,ws_diagn,ws_test_id) VALUES(%s,%s,%s)',(x['pat_id'],x['test_name'],x['test_id']))
                 mysql.connection.commit()
             msg="success"
-            
+
         except:
             msg="something went wrong"
         finally:
-            cursor.close() 
+            cursor.close()
     popSession()
     return redirect("/diagnostics/"+id+"/"+msg)
 
 def popSession():
     session.pop("diagnosticsData",None)
     session.pop("addedTests",None)
-    
