@@ -1,36 +1,41 @@
--- MySQL dump 10.13  Distrib 8.0.19, for osx10.15 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 4.9.1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: hospital
--- ------------------------------------------------------
--- Server version	8.0.19
+-- Host: 127.0.0.1
+-- Generation Time: Jul 01, 2020 at 05:23 PM
+-- Server version: 10.4.8-MariaDB
+-- PHP Version: 7.3.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `hospital`
+--
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `bills`
 --
 
-DROP TABLE IF EXISTS `bills`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bills` (
   `dbill` float(10,2) NOT NULL,
   `mbill` float(10,2) NOT NULL,
   `rbill` float(10,2) NOT NULL,
-  `pid` int NOT NULL,
-  PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `pid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+<<<<<<< Updated upstream
 --
 -- Dumping data for table `bills`
 --
@@ -39,6 +44,9 @@ LOCK TABLES `bills` WRITE;
 /*!40000 ALTER TABLE `bills` DISABLE KEYS */;
 /*!40000 ALTER TABLE `bills` ENABLE KEYS */;
 UNLOCK TABLES;
+=======
+-- --------------------------------------------------------
+>>>>>>> Stashed changes
 
 --
 -- Table structure for table `diag_master`
@@ -68,170 +76,247 @@ UNLOCK TABLES;
 -- Table structure for table `diagnostics`
 --
 
-DROP TABLE IF EXISTS `diagnostics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `diagnostics` (
-  `ws_test_no` int NOT NULL AUTO_INCREMENT,
-  `ws_pat_id` int NOT NULL,
-  `ws_test_id` int NOT NULL,
-  `ws_diagn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`ws_test_no`),
-  UNIQUE KEY `ws_test_no_UNIQUE` (`ws_test_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `ws_test_no` int(11) NOT NULL,
+  `ws_pat_id` int(11) NOT NULL,
+  `ws_test_id` int(11) NOT NULL,
+  `ws_diagn` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `diagnostics`
---
-
-LOCK TABLES `diagnostics` WRITE;
-/*!40000 ALTER TABLE `diagnostics` DISABLE KEYS */;
-/*!40000 ALTER TABLE `diagnostics` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `medicines`
 --
 
-DROP TABLE IF EXISTS `medicines`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicines` (
-  `record_id` int NOT NULL AUTO_INCREMENT,
-  `ws_pat_id` int NOT NULL,
-  `ws_med_name` varchar(80) COLLATE utf8mb4_general_ci NOT NULL,
-  `ws_qty` int DEFAULT NULL,
-  PRIMARY KEY (`record_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `record_id` int(11) NOT NULL,
+  `ws_pat_id` int(11) NOT NULL,
+  `ws_med_name` varchar(80) NOT NULL,
+  `ws_qty` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `medicines`
 --
 
-LOCK TABLES `medicines` WRITE;
-/*!40000 ALTER TABLE `medicines` DISABLE KEYS */;
-INSERT INTO `medicines` VALUES (1,1234,'Paracetamol',3),(3,1234,'Calpol',14),(4,1234,'Aspirin',13),(5,1234,'Paracetamol',13),(6,1234,'Aspirin',8),(7,1234,'Aspirin',2),(8,1234,'Calpol',14),(9,1234,'Calpol',13),(10,1234,'Paracetamol',12),(11,593187719,'Calpol',10),(12,593187719,'Aspirin',6),(13,593187719,'Calpol',10),(14,593187719,'Aspirin',6),(15,593187719,'Aspirin',1);
-/*!40000 ALTER TABLE `medicines` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `medicines` (`record_id`, `ws_pat_id`, `ws_med_name`, `ws_qty`) VALUES
+(16, 298292042, 'Imodium', 17),
+(17, 298292042, 'Zantac', 5),
+(18, 359511053, 'Pepcid AC', 20),
+(19, 904048841, 'Pepcid AC', 20),
+(20, 904048841, 'Paracetamol', 78);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `meds_master`
 --
 
-DROP TABLE IF EXISTS `meds_master`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `meds_master` (
-  `ws_med_id` int NOT NULL,
-  `ws_med_name` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ws_med_id` int(11) NOT NULL,
+  `ws_med_name` varchar(80) DEFAULT NULL,
   `ws_rate` float(10,2) DEFAULT NULL,
-  `ws_med_qty` int DEFAULT NULL,
-  PRIMARY KEY (`ws_med_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `ws_med_qty` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `meds_master`
 --
 
-LOCK TABLES `meds_master` WRITE;
-/*!40000 ALTER TABLE `meds_master` DISABLE KEYS */;
-INSERT INTO `meds_master` VALUES (12,'Paracetamol',12.00,18),(13,'Calpol',15.00,39),(14,'Aspirin',20.00,50);
-/*!40000 ALTER TABLE `meds_master` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `meds_master` (`ws_med_id`, `ws_med_name`, `ws_rate`, `ws_med_qty`) VALUES
+(11123, 'Cetirizine', 21.00, 1000),
+(12345, 'Paracetamol', 18.00, 922),
+(23412, 'Aspirin', 17.00, 1000),
+(34598, 'Imodium', 13.00, 983),
+(56432, 'Naprosyn', 90.00, 1000),
+(56743, 'Pepcid AC', 23.00, 960),
+(67890, 'Calpol', 20.00, 1000),
+(76543, 'Zantac', 9.00, 995),
+(89765, 'Motrin', 200.00, 1000),
+(98765, 'Saridon', 13.00, 1000);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient`
 --
 
-DROP TABLE IF EXISTS `patient`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient` (
-  `ws_ssn` int NOT NULL,
-  `ws_pat_id` int NOT NULL,
-  `ws_adrs` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_age` int DEFAULT NULL,
+  `ws_ssn` int(11) NOT NULL,
+  `ws_pat_id` int(11) NOT NULL,
+  `ws_adrs` varchar(200) DEFAULT NULL,
+  `ws_age` int(11) DEFAULT NULL,
   `ws_doj` date DEFAULT NULL,
   `ws_discharge` date DEFAULT NULL,
-  `ws_rtype` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_pat_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_pat_city` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_pat_state` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`ws_ssn`,`ws_pat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `ws_rtype` varchar(15) DEFAULT NULL,
+  `ws_status` varchar(10) DEFAULT NULL,
+  `ws_pat_name` varchar(50) DEFAULT NULL,
+  `ws_pat_city` varchar(20) DEFAULT NULL,
+  `ws_pat_state` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `patient`
 --
 
+<<<<<<< Updated upstream
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
 INSERT INTO `patient` VALUES (123456789,593187719,'Colaba',21,'2020-06-02',NULL,'Single Room','Active','Sam','Mumbai','MH');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 UNLOCK TABLES;
+=======
+INSERT INTO `patient` (`ws_ssn`, `ws_pat_id`, `ws_adrs`, `ws_age`, `ws_doj`, `ws_discharge`, `ws_rtype`, `ws_status`, `ws_pat_name`, `ws_pat_city`, `ws_pat_state`) VALUES
+(215665572, 298292042, 'Park Street, Kolkata', 33, '2020-06-17', NULL, 'Single Room', 'Active', 'William Joseph', 'Kolkata', 'West Bengal'),
+(242167665, 527858963, '3020  Marigold Lane', 70, '2020-06-22', NULL, 'Single Room', 'Active', 'Steve N Hyatt', 'Ft Lauderdale', 'Florida'),
+(357626773, 842373821, 'Guindy, Chennai', 45, '2020-06-15', NULL, 'Single Room', 'Active', 'Divya P', 'Chennai', 'Tamil Nadu'),
+(364278677, 904048841, '6, Chandni Chowk', 32, '2020-06-11', NULL, 'General Ward', 'Active', 'Abhimanyu Roy', 'Delhi', 'Delhi'),
+(567098222, 441980939, 'Dheeraj Sneh', 31, '2020-06-04', NULL, 'Semi Sharing', 'Active', 'Mihir Deol', 'Maharashtra', 'Mumbai'),
+(567577545, 359511053, 'Kundanahalli, Bangalore', 45, '2020-05-20', NULL, 'Semi Sharing', 'Active', 'Prachi Dubey', 'Bangalore', 'Karnataka'),
+(576565898, 817542925, '4902,Dancing Dove Lane', 19, '2020-05-21', NULL, 'Semi Sharing', 'Active', 'Carlos J Williams', 'Garden City', 'New York'),
+(686686886, 943872066, '5, MG Road', 67, '2020-06-11', NULL, 'Semi Sharing', 'Active', 'Seema Jha', 'Gandhi Nagar', 'Gujarat'),
+(987453212, 106381351, 'Lalpur, Ranchi', 35, '2020-06-24', NULL, 'General Ward', 'Active', 'Rajat Sharma', 'Ranchi', 'Jharkhand');
+
+-- --------------------------------------------------------
+>>>>>>> Stashed changes
 
 --
 -- Table structure for table `tests`
 --
 
-DROP TABLE IF EXISTS `tests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tests` (
+<<<<<<< Updated upstream
   `ws_test_id` int NOT NULL,
   `ws_test_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ws_test_chrg` float(10,2) DEFAULT NULL,
   PRIMARY KEY (`ws_test_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+=======
+  `ws_test_id` int(11) NOT NULL,
+  `ws_test_name` varchar(100) DEFAULT NULL,
+  `ws_test_chrg` float(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+>>>>>>> Stashed changes
 
 --
 -- Dumping data for table `tests`
 --
 
-LOCK TABLES `tests` WRITE;
-/*!40000 ALTER TABLE `tests` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tests` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `tests` (`ws_test_id`, `ws_test_name`, `ws_test_chrg`) VALUES
+(34765, 'Endoscopy', 800.00),
+(45632, 'Radiology', 1000.00),
+(63703, 'Calcium', 350.00),
+(67087, 'Lumbar Puncture', 800.00),
+(67841, 'Pathology', 600.00),
+(76543, 'X-Ray', 100.00),
+(80088, 'Liver Function Test', 3000.00),
+(89075, 'Genetic Testing', 2000.00),
+(98723, 'Blood Test', 200.00),
+(438904, 'Ultrasound', 300.00);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `userstore`
 --
 
-DROP TABLE IF EXISTS `userstore`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `userstore` (
-  `id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pass` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
+  `id` varchar(100) NOT NULL,
+  `pass` varchar(300) NOT NULL,
   `ts` timestamp NULL DEFAULT NULL,
-  `type` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `type` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `userstore`
 --
 
+<<<<<<< Updated upstream
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
 INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:41','d'),('p','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:04','p'),('r','202cb962ac59075b964b07152d234b70','2020-07-01 11:16:31','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+=======
+INSERT INTO `userstore` (`id`, `pass`, `ts`, `type`) VALUES
+('d', '202cb962ac59075b964b07152d234b70', '2020-07-01 15:21:32', 'd'),
+('p', '202cb962ac59075b964b07152d234b70', '2020-07-01 14:57:45', 'p'),
+('r', '202cb962ac59075b964b07152d234b70', '2020-07-01 14:13:15', 'r');
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bills`
+--
+ALTER TABLE `bills`
+  ADD PRIMARY KEY (`pid`);
+
+--
+-- Indexes for table `diagnostics`
+--
+ALTER TABLE `diagnostics`
+  ADD PRIMARY KEY (`ws_test_no`),
+  ADD UNIQUE KEY `ws_test_no_UNIQUE` (`ws_test_no`);
+
+--
+-- Indexes for table `medicines`
+--
+ALTER TABLE `medicines`
+  ADD PRIMARY KEY (`record_id`);
+
+--
+-- Indexes for table `meds_master`
+--
+ALTER TABLE `meds_master`
+  ADD PRIMARY KEY (`ws_med_id`);
+
+--
+-- Indexes for table `patient`
+--
+ALTER TABLE `patient`
+  ADD PRIMARY KEY (`ws_ssn`,`ws_pat_id`);
+
+--
+-- Indexes for table `tests`
+--
+ALTER TABLE `tests`
+  ADD PRIMARY KEY (`ws_test_id`);
+
+--
+-- Indexes for table `userstore`
+--
+ALTER TABLE `userstore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `diagnostics`
+--
+ALTER TABLE `diagnostics`
+  MODIFY `ws_test_no` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `medicines`
+--
+ALTER TABLE `medicines`
+  MODIFY `record_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+COMMIT;
+>>>>>>> Stashed changes
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+<<<<<<< Updated upstream
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-07-01 17:13:24
+=======
+>>>>>>> Stashed changes
