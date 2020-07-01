@@ -1,8 +1,91 @@
 {% extends "index.html" %}
 {% block content %}
+<!-- Write code indside this block -->
+<style>
+    .required:after {
+        content: " *";
+        color: red;
+    }
+</style>
 
-<!-- Add code inside this block -->
-
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <h3 style="color: black;">Patient Registration</h3><br><br>
+    </div>
+    <form action="" method="post">
+        <div class="form-group row">
+            <label for="SSNId" class="col-sm-2 col-form-label text-body required">Patient SSN ID</label>
+            <div class="col-sm-10">
+                <input type="text" name="ssn" class="form-control" placeholder="eg. 123456789" required minlength="9" maxlength="9" pattern="\d*">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label text-body required">Patient Name</label>
+            <div class="col-sm-10">
+                <input type="text" name="name" class="form-control" placeholder="eg. John Doe" required maxlength=40 pattern="^[A-Za-z ]+$">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="age" class="col-sm-2 col-form-label text-body required">Age</label>
+            <div class="col-sm-10">
+                <input type="number" name="age" class="form-control" placeholder="eg. 21" required maxlength=3>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="doj" class="col-sm-2 col-form-label text-body required">Date of Admission</label>
+            <div class="col-sm-10">
+                <input type="date" name="doj" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="bedType" class="col-sm-2 col-form-label text-body required">Type of Bed</label>
+            <div class="col-sm-10">
+                <select name="bedType" id="bedType" class="form-control">
+                    <option value="General Ward">General Ward</option>
+                    <option value="Semi Sharing">Semi Sharing</option>
+                    <option value="Single Room">Single Room</option>
+                </select>
+            </div>
+        </div>        
+        <div class="form-group row">
+            <label for="address" class="col-sm-2 col-form-label text-body required">Address</label>
+            <div class="col-sm-10">
+                <input type="text" name="address" class="form-control" placeholder="eg. Fort, Mumbai" required
+                    maxlength=200>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="state" class="col-sm-2 col-form-label text-body required">State</label>
+            <div class="col-sm-10">
+                <input type="text" name="state" class="form-control" required maxlength=50
+                    pattern="^[A-Za-z ]+$">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="city" class="col-sm-2 col-form-label text-body required">City</label>
+            <div class="col-sm-10">
+                <input type="text" name="city" class="form-control" required maxlength=50 pattern="^[A-Za-z ]+$">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-12 offset-sm-2 msg">
+                <label style="color:blue">{{ message }}</label>
+            </div>
+        </div>
+        {% for message in get_flashed_messages() %}
+        {% if msg=="success" %}
+        <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
+        {% else %}
+        <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
+        {% endif %}
+        {% endfor %}
+        <div class="form-group row">
+            <div class="col-sm-12 offset-sm-6">
+                <label style="color:red" ;>(*) Fields are compulsory</label>
+                <button type="submit" class="btn btn-primary" value="submit">Submit</button>
+                <button type="reset" class="btn btn-primary">Reset</button>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}
-
-

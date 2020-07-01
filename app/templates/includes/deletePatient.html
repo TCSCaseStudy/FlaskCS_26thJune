@@ -1,8 +1,68 @@
 {% extends "index.html" %}
 {% block content %}
 
-<!-- Add code inside this block -->
+<div class="search-form">
+    <form id="myForm" action="{{url_for('deletePatient')}}" method="POST" class="design">
+        <br><br>
+        <h2>Delete Patient Details<span class="float-right"><a href="{{ url_for('searchPatients')}}"
+                    style="text-decoration: none;color:rgb(235, 49, 49);">Reset Page</a></span></h2>
+        <hr style="clear: both;">
+        <input type="text" placeholder="Enter Patient Id" id="Id" name="Id" value="{{ patientId }}" required>
+        <button type="submit"><i class="fa fa-search"></i></button>
+        <br><br>
+    </form>
+
+    {% for message in get_flashed_messages() %}
+    {% if msg=="success" %}
+    <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
+    <form action="{{ url_for('delete')}}" method="post">
+    <div class="row justify-content-center"><button class="btn btn-danger">DELETE <i class="fa fa-trash"></i></button></div></form>
+    {% else %}
+
+    <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
+
+    {% endif %}
+
+    {% endfor %}
+
+
+
+    {% if patientData %}
+    <div class="search-form">
+        <form method="POST">
+            <div class="form-group">
+                <label for="name"><b>Patient Name</b></label>
+                <div class="form-control">{{ patientData['ws_pat_name'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="age"><b>Patient Age</b></label>
+                <div class="form-control">{{ patientData['ws_age'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="doj"><b>Date of Admission </b></label>
+                <div class="form-control">{{ patientData['ws_doj'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="bed_type"><b>Type of Bed</b></label>
+                <div class="form-control">{{ patientData['ws_rtype'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="address"><b>Address</b></label>
+                <div class="form-control">{{ patientData['ws_adrs'] }}</div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="city"><b>City</b></label>
+                <div class="form-control">{{ patientData['ws_pat_city'] }}</div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
 
 {% endblock %}
-
-

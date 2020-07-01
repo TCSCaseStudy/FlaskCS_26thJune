@@ -2,7 +2,7 @@ from app import app
 from flask_mysqldb import MySQL
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import MySQLdb.cursors
-import config,random,hashlib
+import config,random,hashlib,json
 import time,datetime
 
 app.secret_key = config.Config.SECRET_KEY
@@ -50,8 +50,8 @@ def login():
             try:
                 cursor.execute('update userstore set ts=%s where id=%s',(timestamp,username))
                 mysql.connection.commit()
-            except Exception as e:
-                return str(e)
+            except:
+                pass
             if account['type'] == 'p':
                 session['p_login'] = True
             elif account['type'] == 'd':
@@ -124,19 +124,106 @@ def welcome():
 
 @app.route("/createPatient",methods=['GET', 'POST'])
 def createPatient():
-    return render_template("includes/createPatient.html")
+    msg = ''
+    message=''
+    if request.method == 'POST' and request.form.get('ssn'):
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        try:
+            cursor.execute(
+                "INSERT INTO patient(ws_ssn,ws_pat_id,ws_adrs,ws_age,ws_doj,ws_rtype,ws_status,ws_pat_name,ws_pat_city,ws_pat_state) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (int(request.form['ssn']), int(random.randint(100000000, 999999999)), request.form['address'], int(request.form['age']), request.form['doj'], request.form['bedType'], 'Active', request.form['name'], request.form['city'], request.form['state']))
+            mysql.connection.commit()
+            flash('Patient creation initiated successfully')
+            msg='success'
+        except:
+            flash("Failed to add Patient. Please try again with different field values!")
+            return render_template("includes/createPatient.html", msg=msg, message=message)
+        finally:
+            cursor.close()
+    return render_template("includes/createPatient.html", msg=msg,message=message)
 
 
 @app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
-    return render_template("includes/updatePatient.html")
+    msg = ''
+    message = ''
+    if request.method == 'POST' and request.form.get('pid'):
+        pid = request.form['pid']
+        name = request.form['name']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * from patient where ws_pat_id=%s',[pid])
+        res=cursor.fetchone()
+        if not res:
+            flash("Patient not registered. Please check the ID")
+            return render_template("includes/updatePatient.html", msg=msg, message=message)
+        if len(pid)>0 and len(name)>0:
+            age = request.form['age']
+            doj = request.form['doj']
+            bedType = request.form['bedType']
+            address = request.form['address']
+            state = request.form['state']
+            city = request.form['city']
+            try:
+                cursor.execute('Update patient set ws_pat_name=%s,ws_age=%s,ws_doj=%s,ws_rtype=%s,ws_adrs=%s,ws_pat_state=%s,ws_pat_city=%s where ws_pat_id=%s',
+                            (name, age, doj, bedType, address, state, city, pid))
+                mysql.connection.commit()
+                flash('Patient update initiated successfully')
+                msg = 'success'
+                return render_template("includes/updatePatient.html", name=name, age=age, doj=doj, bedType=bedType, address=address, state=state, city=city, pid=pid,msg=msg,message=message)
+            except:
+                flash("Failed to update Patient details. Please try again with different field values!")
+                return render_template("includes/updatePatient.html", msg=msg, message=message)
+            finally:
+                cursor.close()
+
+        elif len(pid)>0 and len(name)==0:
+            msg='info'
+            flash("Patient Found. Edit details to update!")
+            return render_template("includes/updatePatient.html", pid=res['ws_pat_id'],name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'],msg=msg,message=message)
+        else:
+            flash("Patient not registered. Please check the ID")
+    return render_template("includes/updatePatient.html", msg=msg, message=message)
+
 
 
 @app.route("/deletePatient", methods=['GET', 'POST'])
 def deletePatient():
-    return render_template("includes/deletePatient.html")
+    popSession()
+    cursor = mysql.connection.cursor()
+    #Fetching the Id of the patient and storing it in Id variable
+    if request.method == 'POST' and 'Id' in request.form:
+        Id = request.form["Id"]
+        session['id']=Id
+        if Id.isdigit():   
+            cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
+            patientData = cursor.fetchone()
+            cursor.close()
+            if patientData:
+                flash("Patient Data Found")
+                return render_template('includes/deletePatient.html',patientData=patientData,patientId=Id,msg="success")
+            #else pass the error message
+            else:
+                flash("No Patient Data Found")
+        else:
+            flash("Please enter a valid ID")
+            return render_template("includes/deletePatient.html")    
+    return render_template("includes/deletePatient.html") 
 
 
+@app.route("/delete", methods=['POST'])
+def delete():
+    cursor = mysql.connection.cursor()
+    try:
+        print(session['id'])
+        cursor.execute('delete from patient where ws_pat_id=%s',[session['id']])
+        mysql.connection.commit()
+        flash("Patient deletion initiated successfully")
+        return render_template('includes/deletePatient.html', msg="success")
+    except Exception as e:
+        flash(str(e))
+        return render_template('includes/deletePatient.html', msg="success")
+
+
+    
 @app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
     popSession()
@@ -144,7 +231,6 @@ def viewAllPatients():
     cursor.execute(
         "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_rtype FROM patient WHERE ws_status = 'Active' ")
     patientData = cursor.fetchall()
-    print(patientData)
     return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True)
 
 
@@ -156,16 +242,11 @@ def searchPatients():
     #Fetching the Id of the patient and storing it in Id variable
     if request.method == 'POST' and 'Id' in request.form:
         Id = request.form["Id"]
-        
         if Id.isdigit():   
-            
             cursor.execute("SELECT * FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
-            
             cursor.close()
             if patientData:
-                
-                
                 flash("Data Found")
                 return render_template('includes/searchPatients.html',patientData=patientData,patientId=Id,msg="success")
             #else pass the error message
@@ -291,7 +372,6 @@ def medIssueSuccess():
         med = cursor.fetchall()
         cursor.close()
 
-<<<<<<< Updated upstream
         #Storing fetched quantity
         fetchedQuantity=int(med[0]['Quantity'])
 
@@ -312,7 +392,8 @@ def medIssueSuccess():
         except Exception as e:
             return str(e)
     return render_template("includes/medIssueSuccess.html")
-=======
+
+
 @app.route("/getPatientDiagnosticDetails", methods=['GET', 'POST'])
 def getPatientDiagnosticDetails():
     popSession()
@@ -320,19 +401,17 @@ def getPatientDiagnosticDetails():
         Id = request.form["Id"]
         if Id.isdigit():
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT p.ws_pat_id,p.ws_pat_name,p.ws_age,p.ws_adrs,p.ws_doj,p.ws_pat_city,p.ws_pat_state,m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s",(Id,))
+            cursor.execute("SELECT p.ws_pat_id,p.ws_pat_name,p.ws_age,p.ws_adrs,p.ws_doj,p.ws_pat_city,p.ws_pat_state,m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
-            
             if patientData:
-
-                return render_template('includes/getPatientDiagonsticDetails.html',patientData=patientData)
-
+                return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
             else:
-                cursor.execute("SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
+                cursor.execute(
+                    "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
                 patientData = cursor.fetchone()
                 if patientData:
-                    patientData['ws_med_name']=''
-                    return render_template('includes/getPatientDiagonsticDetails.html',patientData=patientData)
+                    patientData['ws_med_name'] = ''
+                    return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
                 else:
                     flash("Patient data doesn't exist")
         else:
@@ -340,8 +419,6 @@ def getPatientDiagnosticDetails():
             return render_template("includes/getPatientDiagonsticDetails.html")
     return render_template("includes/getPatientDiagonsticDetails.html")
 
-
->>>>>>> Stashed changes
 
 @app.route("/diagnostics/<patId>/<msg>")
 @app.route("/diagnostics/<patId>/", methods=['GET', 'POST'] ,defaults= {'msg': ""})

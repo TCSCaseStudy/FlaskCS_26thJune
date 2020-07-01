@@ -4,3 +4,4 @@ env/
 tempCodeRunnerFile.python
 app/__pycache__/routes.cpython-37.pyc
 *.pyc
+config.codekit3
