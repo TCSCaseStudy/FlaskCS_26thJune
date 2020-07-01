@@ -22,7 +22,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # ----------------------------------------------
 
 # for ubuntu user
-# app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
+app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 # ----------------------------------------------
 mysql = MySQL(app)
 
@@ -338,11 +338,12 @@ def patientBilling():
 @app.route("/confirmBilling", methods=['GET'])
 def confirmBilling():
     patientId = request.args.get('patientId')
+    rbill = mbill = dbill = total = 0
     rbill = request.args.get('rbill')
     mbill = request.args.get('mbill')
     dbill = request.args.get('dbill')
     total = request.args.get('total')
-    if not (patientId is None or rbill is None or mbill is None or total is None):
+    if not (patientId is None):
         cursor = mysql.connection.cursor()
         try:
             today = date.today()
