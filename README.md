@@ -2,6 +2,11 @@
 This is a Case Study using Flask Framework, assigned by TCS on 26th June 2020 .
 
 # IMPORTANT POINTS HERE
+
+### LOGIN Details
+Ids = [receptionist,diagnostics,pharmacist]
+Password = TCSCS26thJune    (common)
+
 (Please check this once before starting everyday)
 1. Update your hospitals.sql DB with the new file with the command
 `mysql hospital < hospital.sql`
