@@ -13,6 +13,7 @@
         }
     </style>
 </head>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container d-flex align-items-center">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
@@ -32,11 +33,11 @@
     <form action="{{ url_for('register') }}" method="post">
         <div class="form-group row">
             <label for="username"><i class="fas fa-user"></i></label>
-            <input type="text" name="username" placeholder="Username" id="username" required>
+            <input type="text" name="username" placeholder="Username" id="username" minlength="8" required>
         </div>
         <div class="form-group row">
             <label for="password"><i class="fas fa-lock"></i></label>
-            <input type="password" name="password" placeholder="Password" id="password" required>
+            <input type="password" name="password" placeholder="Password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{10,}" minlength=10 required>
         </div>
         <div class="form-group row">
             <label for="type"><i class="fas fa-id-badge"></i></label>
@@ -47,7 +48,7 @@
             </select>
         </div>
         <div class="msg">{{msg}}</div>
-        <input type="submit" value="Register">
+        <input type="submit" value="Register" onclick="test_str()">
     </form>
 </div>
 {% endblock %}

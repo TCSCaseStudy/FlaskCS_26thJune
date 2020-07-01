@@ -22,7 +22,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # ----------------------------------------------
 
 # for ubuntu user
-app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
+# app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 # ----------------------------------------------
 mysql = MySQL(app)
 
@@ -132,8 +132,7 @@ def createPatient():
     msg = ''
     message=''
     ts = time.time()
-    timestamp = datetime.datetime.fromtimestamp(
-        ts).strftime('%Y-%m-%d')
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and request.form.get('ssn'):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         try:
@@ -149,54 +148,56 @@ def createPatient():
             cursor.close()
     return render_template("includes/createPatient.html", msg=msg,message=message,timestamp=timestamp)
 
-
 @app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
-    msg = ''
-    message = ''
+    msg=''
+    message=''
+    done=False
     ts = time.time()
-    timestamp = datetime.datetime.fromtimestamp(
-        ts).strftime('%Y-%m-%d')
-    if request.method == 'POST' and request.form.get('pid'):
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+    if request.method == 'POST' and 'pid' in request.form:
         pid = request.form['pid']
-        name = request.form['name']
+        session['pid']=pid
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * from patient where ws_pat_id=%s',[pid])
+        cursor.execute('SELECT * from patient where ws_pat_id =%s',[pid])
         res=cursor.fetchone()
-        if not res:
-            flash("Patient not registered. Please check the ID")
-            return render_template("includes/updatePatient.html", msg=msg, message=message,timestamp=timestamp)
-        if len(pid)>0 and len(name)>0:
-            age = request.form['age']
-            doj = request.form['doj']
-            bedType = request.form['bedType']
-            address = request.form['address']
-            state = request.form['state']
-            city = request.form['city']
-            try:
-                cursor.execute('Update patient set ws_pat_name=%s,ws_age=%s,ws_doj=%s,ws_rtype=%s,ws_adrs=%s,ws_pat_state=%s,ws_pat_city=%s where ws_pat_id=%s',
-                            (name, age, doj, bedType, address, state, city, pid))
-                mysql.connection.commit()
-                flash('Patient update initiated successfully')
-                msg = 'success'
-                return render_template("includes/updatePatient.html", name=name, age=age, doj=doj, bedType=bedType, address=address, state=state, city=city, pid=pid,msg=msg,message=message,timestamp=timestamp)
-            except:
-                flash("Failed to update Patient details. Please try again with different field values!")
-                return render_template("includes/updatePatient.html", msg=msg, message=message, timestamp=timestamp)
-            finally:
-                cursor.close()
-
-        elif len(pid)>0 and len(name)==0:
-            msg='info'
+        if res:
             flash("Patient Found. Edit details to update!")
-            return render_template("includes/updatePatient.html", pid=res['ws_pat_id'],name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'],msg=msg,message=message,timestamp=timestamp)
+            return render_template("includes/updatePatient.html",pid=pid,name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'], msg='info',done=True,message=message,timestamp=timestamp)
         else:
             flash("Patient not registered. Please check the ID")
-    flash("Enter Patient ID only")
-    return render_template("includes/updatePatient.html", msg='info', message=message,timestamp=timestamp)
+            return render_template("includes/updatePatient.html",msg='',message=message,done=done)
+
+    return render_template("includes/updatePatient.html",msg=msg,message=msg,done=done)
 
 
+@app.route("/insertPatData", methods=['GET', 'POST'])
+def insertPatData():
+    msg = ''
+    message = ''
+    done = False
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+    if request.method == 'POST' and 'name' in request.form:
+        name = request.form['name']
+        age = request.form['age']
+        doj = request.form['doj']
+        bedType = request.form['bedType']
+        address = request.form['address']
+        state = request.form['state']
+        city = request.form['city']
+        cursor = mysql.connection.cursor()
+        try:
+            cursor.execute('UPDATE patient set ws_pat_name=%s,ws_age=%s,ws_doj=%s,ws_rtype=%s,ws_adrs=%s,ws_pat_state=%s,ws_pat_city=%s where ws_pat_id=%s',(name,age,doj,bedType,address,state,city,session['pid']))
+            mysql.connection.commit()
+            flash('Patient update initiated successfully')
+            return render_template("includes/updatePatient.html",done=False,msg='success',message=message)
+        except:
+            flash(
+                "Failed to update Patient details. Please try again with different field values!")
+    return render_template("includes/updatePatient.html",msg=msg,message=message,timestamp=timestamp)
 
+    
 @app.route("/deletePatient", methods=['GET', 'POST'])
 def deletePatient():
     popSession()

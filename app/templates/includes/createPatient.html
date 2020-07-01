@@ -12,6 +12,13 @@
     <div class="row d-flex justify-content-center">
         <h3 style="color: black;">Patient Registration</h3><br><br>
     </div>
+    {% for message in get_flashed_messages() %}
+    {% if msg=="success" %}
+    <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
+    {% else %}
+    <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
     <form action="" method="post">
         <div class="form-group row">
             <label for="SSNId" class="col-sm-2 col-form-label text-body required">Patient SSN ID</label>
@@ -72,13 +79,7 @@
                 <label style="color:blue">{{ message }}</label>
             </div>
         </div>
-        {% for message in get_flashed_messages() %}
-        {% if msg=="success" %}
-        <div class="p-3 mb-2 bg-success text-white">{{ message }}</div>
-        {% else %}
-        <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
-        {% endif %}
-        {% endfor %}
+        
         <div class="form-group row">
             <div class="col-sm-12 offset-sm-6">
                 <label style="color:red" ;>(*) Fields are compulsory</label>
