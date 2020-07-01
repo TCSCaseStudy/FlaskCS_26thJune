@@ -41,6 +41,30 @@ LOCK TABLES `bills` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `diag_master`
+--
+
+DROP TABLE IF EXISTS `diag_master`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `diag_master` (
+  `ws_test_id` int NOT NULL,
+  `ws_test_name` varchar(100) DEFAULT NULL,
+  `ws_test_chrg` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`ws_test_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `diag_master`
+--
+
+LOCK TABLES `diag_master` WRITE;
+/*!40000 ALTER TABLE `diag_master` DISABLE KEYS */;
+/*!40000 ALTER TABLE `diag_master` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `diagnostics`
 --
 
@@ -197,7 +221,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:41','d'),('p','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:04','p'),('r','202cb962ac59075b964b07152d234b70','2020-07-01 04:32:30','r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:41','d'),('p','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:04','p'),('r','202cb962ac59075b964b07152d234b70','2020-07-01 11:16:31','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -210,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-01 10:09:12
+-- Dump completed on 2020-07-01 17:13:24
