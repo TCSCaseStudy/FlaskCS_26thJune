@@ -9,7 +9,7 @@ from datetime import date
 app.secret_key = config.Config.SECRET_KEY
 # ------------------ RIYA ----------------------
 # for xampp
-app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
 # app.config['MYSQL_PASSWORD'] = 'password'
@@ -18,9 +18,11 @@ app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_DB'] = 'hospital'
-# for ubuntu user
-app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# ----------------------------------------------
+
+# for ubuntu user
+# app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 # ----------------------------------------------
 mysql = MySQL(app)
 
