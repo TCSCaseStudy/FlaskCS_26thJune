@@ -2,7 +2,126 @@
 {% block content %}
 
 <!-- Add code inside this block -->
+{% include 'includes/_messages.html' %}
+<div class="search-form">
+    <form id="myForm" action="" method="POST" class="design">
+        <br><br>
+        <h2>Create Patient Bill<span class="float-right"><a href="{{ url_for('patientBilling')}}"
+                    style="text-decoration: none;color:rgb(235, 49, 49);">Reset Page</a></span></h2>
+        <hr style="clear: both;">
+        <input type="text" placeholder="Enter Patient Id" id="Id" name="Id"
+            value="{% if patient %}{{ patient['ws_pat_id'] }}{% endif %}" required>
+        <button type="submit"><i class="fa fa-search"></i></button>
+        <br><br>
+    </form>
+</div>
 
+<div class="container my-2" id="patient-details">
+    {% if patient %}
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Patient Id</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Address</th>
+                <th>DOJ</th>
+                <th>Date of discharge</th>
+                <th>Type of Room</th>
+            </tr>
+            <tr>
+                <td>{{patient.ws_pat_id}}</td>
+                <td>{{patient.ws_pat_name}}</td>
+                <td>{{patient.ws_age}}</td>
+                <td>{{patient.ws_adrs}}</td>
+                <td>{{patient.ws_doj}}</td>
+                <td>{{patient.ws_discharge}}</td>
+                <td>{{patient.ws_rtype}}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-right"><strong>Number of days:</strong></td>
+                <td>{{ no_days }}</td>
+                <td colspan="2" class="text-right"><strong>Bill for Room:</strong></td>
+                <td>
+                    Rs. {{room_charge}}
+                    {#
+                    {% if 'general' == patient.ws_rtype %}
+                    {{ no_days*2000 }}
+                    {% set total_day_amount = no_days*2000 %}
+                    {% elif 'semi' == patient.ws_rtype %}
+                    {{ no_days*4000 }}
+                    {% set total_day_amount = no_days*4000 %}
+                    {% elif 'single' == patient.ws_rtype %}
+                    {{ no_days*8000 }}
+                    {% set total_day_amount = no_days*8000 %}
+                    {% endif %}
+                    #}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {% if medicine %}
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Medicine</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+            {%for med in medicine%}
+            <tr>
+                <td>{{ med.ws_med_name }}</td>
+                <td>{{ med.ws_qty }}</td>
+                <td>Rs.{{ medratelist[med.ws_med_name] }}</td>
+                <td>{{ med.ws_qty * medratelist[med.ws_med_name] }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="text-right font-weight-bold">Bill for Pharmacy</td>
+                <td>{{ med_charge }}</td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if diganosis %}
+    <div class="w-50" style="margin-left: auto;margin-right: auto;">
+        <div class="table-responsive">
+            <table class="table">
+                <tr>
+                    <th>Name of the Test</th>
+                    <th>Amount</th>
+                </tr>
+                {% for diag in diganosis %}
+                <tr>
+                    <td>{{diag['diagnosis']}}</td>
+                    <td>{{diag['charge']}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-right"><strong>Bill for Diagnosis</strong></td>
+                    <td>{{diagnos_charge}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="w-50" style="margin-left: auto;margin-right: auto;">
+        <div class="row">
+            <div class="col-6 text-right"><strong>Total Amount Payable</strong></div>
+            <div class="col-6"> {{total_charge}} </div>
+        </div>
+    </div>
+
+    <div class="py-3 text-center">
+        <a href="{{url_for('confirmBilling', patientId=patient['ws_pat_id'],rbill=room_charge,mbill=med_charge,dbill=diagnos_charge,total=total_charge)}}" class="btn btn-primary">Confirm</a>
+        <span class="col-1"></span>
+        <a href="{{ url_for('patientBilling')}}" class="btn btn-primary">Cancel</a>
+    </div>
+
+    {% endif %}
+</div>
 {% endblock %}
-
-
