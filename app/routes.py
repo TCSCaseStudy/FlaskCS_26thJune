@@ -11,7 +11,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-# app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -402,19 +402,24 @@ def getPatientDiagnosticDetails():
         Id = request.form["Id"]
         if Id.isdigit():
             cursor = mysql.connection.cursor()
-            cursor.execute("SELECT p.ws_pat_id,p.ws_pat_name,p.ws_age,p.ws_adrs,p.ws_doj,p.ws_pat_city,p.ws_pat_state,m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
+            cursor.execute("SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
             if patientData:
+                cursor.execute("SELECT m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
+                medicine=cursor.fetchall()
+                patientData['ws_med_name']=''
+                if medicine:
+                    med=[]
+                    for x in medicine:
+                        med.append(x['ws_med_name'])
+
+                    patientData['ws_med_name']=med
+                cursor.close()
                 return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
+
             else:
-                cursor.execute(
-                    "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
-                patientData = cursor.fetchone()
-                if patientData:
-                    patientData['ws_med_name'] = ''
-                    return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
-                else:
-                    flash("Patient data doesn't exist")
+                cursor.close()
+                flash("Patient data doesn't exist")
         else:
             flash("Please Enter Valid Data")
             return render_template("includes/getPatientDiagonsticDetails.html")

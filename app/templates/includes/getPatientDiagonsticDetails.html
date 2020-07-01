@@ -42,7 +42,11 @@
                     <td>{{ patientData["ws_age"] }}</td>
                     <td>{{ patientData["ws_adrs"] }} , {{ patientData["ws_pat_city"] }} , {{ patientData["ws_pat_state"] }}</td>
                     <td>{{ patientData["ws_doj"] }}</td>
-                    <td>{{ patientData["ws_med_name"] }}</td>
+                    <td>
+                    {% for x in patientData["ws_med_name"] %}
+                        {{ x }},
+                    {% endfor %}
+                    </td>
     
                 </tr>
             </tbody>
