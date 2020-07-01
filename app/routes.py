@@ -126,6 +126,9 @@ def welcome():
 def createPatient():
     msg = ''
     message=''
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(
+        ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and request.form.get('ssn'):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         try:
@@ -136,16 +139,19 @@ def createPatient():
             msg='success'
         except:
             flash("Failed to add Patient. Please try again with different field values!")
-            return render_template("includes/createPatient.html", msg=msg, message=message)
+            return render_template("includes/createPatient.html", msg=msg, message=message,timestamp=timestamp)
         finally:
             cursor.close()
-    return render_template("includes/createPatient.html", msg=msg,message=message)
+    return render_template("includes/createPatient.html", msg=msg,message=message,timestamp=timestamp)
 
 
 @app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
     msg = ''
     message = ''
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(
+        ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and request.form.get('pid'):
         pid = request.form['pid']
         name = request.form['name']
@@ -154,7 +160,7 @@ def updatePatient():
         res=cursor.fetchone()
         if not res:
             flash("Patient not registered. Please check the ID")
-            return render_template("includes/updatePatient.html", msg=msg, message=message)
+            return render_template("includes/updatePatient.html", msg=msg, message=message,timestamp=timestamp)
         if len(pid)>0 and len(name)>0:
             age = request.form['age']
             doj = request.form['doj']
@@ -168,20 +174,20 @@ def updatePatient():
                 mysql.connection.commit()
                 flash('Patient update initiated successfully')
                 msg = 'success'
-                return render_template("includes/updatePatient.html", name=name, age=age, doj=doj, bedType=bedType, address=address, state=state, city=city, pid=pid,msg=msg,message=message)
+                return render_template("includes/updatePatient.html", name=name, age=age, doj=doj, bedType=bedType, address=address, state=state, city=city, pid=pid,msg=msg,message=message,timestamp=timestamp)
             except:
                 flash("Failed to update Patient details. Please try again with different field values!")
-                return render_template("includes/updatePatient.html", msg=msg, message=message)
+                return render_template("includes/updatePatient.html", msg=msg, message=message, timestamp=timestamp)
             finally:
                 cursor.close()
 
         elif len(pid)>0 and len(name)==0:
             msg='info'
             flash("Patient Found. Edit details to update!")
-            return render_template("includes/updatePatient.html", pid=res['ws_pat_id'],name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'],msg=msg,message=message)
+            return render_template("includes/updatePatient.html", pid=res['ws_pat_id'],name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'],msg=msg,message=message,timestamp=timestamp)
         else:
             flash("Patient not registered. Please check the ID")
-    return render_template("includes/updatePatient.html", msg=msg, message=message)
+    return render_template("includes/updatePatient.html", msg=msg, message=message,timestamp=timestamp)
 
 
 
