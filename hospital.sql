@@ -37,6 +37,7 @@ CREATE TABLE `bills` (
 
 LOCK TABLES `bills` WRITE;
 /*!40000 ALTER TABLE `bills` DISABLE KEYS */;
+INSERT INTO `bills` VALUES (0.00,560.00,240000.00,593187719);
 /*!40000 ALTER TABLE `bills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,32 +172,8 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
-INSERT INTO `patient` VALUES (123456789,593187719,'Colaba',21,'2020-06-02',NULL,'Single Room','Active','Sam','Mumbai','MH');
+INSERT INTO `patient` VALUES (123456789,593187719,'Colaba',21,'2020-06-02','2020-07-01','Single Room','Active','Sam','Mumbai','MH');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tests`
---
-
-DROP TABLE IF EXISTS `tests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tests` (
-  `ws_test_id` int NOT NULL,
-  `ws_test_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ws_test_chrg` float(10,2) DEFAULT NULL,
-  PRIMARY KEY (`ws_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tests`
---
-
-LOCK TABLES `tests` WRITE;
-/*!40000 ALTER TABLE `tests` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tests` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -221,7 +198,7 @@ CREATE TABLE `userstore` (
 
 LOCK TABLES `userstore` WRITE;
 /*!40000 ALTER TABLE `userstore` DISABLE KEYS */;
-INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:41','d'),('p','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:04','p'),('r','202cb962ac59075b964b07152d234b70','2020-07-01 11:16:31','r');
+INSERT INTO `userstore` VALUES ('d','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:41','d'),('p','202cb962ac59075b964b07152d234b70','2020-07-01 04:36:04','p'),('r','202cb962ac59075b964b07152d234b70','2020-07-01 12:11:08','r');
 /*!40000 ALTER TABLE `userstore` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -234,4 +211,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-01 17:13:24
+-- Dump completed on 2020-07-01 18:24:09
