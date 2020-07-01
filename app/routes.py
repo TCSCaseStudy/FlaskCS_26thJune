@@ -22,7 +22,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # ----------------------------------------------
 
 # for ubuntu user
-# app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
+app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 # ----------------------------------------------
 mysql = MySQL(app)
 
