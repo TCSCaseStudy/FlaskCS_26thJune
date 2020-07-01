@@ -56,15 +56,15 @@
 
       <!--  Hidden form visible only when Add button is clicked -->
      <div class="login" id="form"  style="margin-bottom:30px; margin-top:20px; display:none;">
-         <center><h1>Add Medicine for PatientID:{{patientid}}</h1><center>
+         <center><h1>Add Medicine for Patient with ID: {{patientid}}</h1><center>
          <form action="" method="post">
              <label for="medicine">
              </label>
-             <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" required>
+             <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" pattern="[a-zA-Z]+" required>
              <br><br>
              <label for="qty">
              </label>
-             <input type="text" name="qty" placeholder="Enter Quantity" id="qty" required>
+             <input type="text" name="qty" placeholder="Enter Quantity" id="qty" pattern="[0-9]+" required>
              <input type="submit" value="Check Availability">
                </form>
          </div>
@@ -72,16 +72,16 @@
 {% else %}
 
     <div class="login" style="margin-bottom:30px; margin-top:20px;">
-        <center><h1>Enter Medicine for PatientID:{{patientid}}</h1></center>
+        <center><h1>Enter Medicine for Patient with ID: {{patientid}}</h1></center>
           <center>
         <form action="" method="post">
             <label for="medicine">
             </label>
-            <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" required>
+            <input type="text" name="medname" placeholder="Enter Medicine Name" id="medname" pattern="[a-zA-Z]+" required>
             <br><br>
             <label for="qty">
             </label>
-            <input type="text" name="qty" placeholder="Enter Quantity" id="qty" required>
+            <input type="text" name="qty" placeholder="Enter Quantity" id="qty" pattern="[0-9]+" required>
             <input type="submit" value="Check Availability">
               </form>
               </center>
