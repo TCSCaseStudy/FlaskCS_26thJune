@@ -4,11 +4,12 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import MySQLdb.cursors
 import config,random,hashlib,json
 import time,datetime
+from datetime import date
 
 app.secret_key = config.Config.SECRET_KEY
 # ------------------ RIYA ----------------------
 # for xampp
-# app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
 # app.config['MYSQL_PASSWORD'] = 'password'
@@ -17,6 +18,8 @@ app.secret_key = config.Config.SECRET_KEY
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_DB'] = 'hospital'
+# for ubuntu user
+app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # ----------------------------------------------
 mysql = MySQL(app)
@@ -262,8 +265,90 @@ def searchPatients():
 @app.route("/patientBilling", methods=['GET', 'POST'])
 def patientBilling():
     popSession()
+    if request.method == 'POST' and 'Id' in request.form:
+        patientId = request.form['Id']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM patient WHERE ws_pat_id=%s AND ws_discharge IS NULL', [patientId])
+        patient = cursor.fetchone()
+        if patient:
+            total_charge = room_charge = med_charge = diagnos_charge = float(0)
+            today = date.today()
+            patient['ws_discharge'] = today
+            
+            doj = patient['ws_doj']
+            doj_date = str(doj).split('-')
+            d2_y = int(doj_date[0])
+            d2_m = int(doj_date[1])
+            d2_d = int(doj_date[2])
+            d2 = date(d2_y, d2_m, d2_d)
+
+            no_days = (today - d2).days + 1
+            if not no_days > 0:
+                flash('Error contact to db admin', 'danger')
+                return render_template("includes/patientBilling.html")
+            if patient['ws_rtype'] == 'General Ward':
+                room_charge = no_days * 2000
+            elif patient['ws_rtype'] == 'Semi Sharing':
+                room_charge = no_days * 4000
+            elif patient['ws_rtype'] == 'Single Room':
+                room_charge = no_days * 8000
+            # fetch medicine details
+            cursor.execute(
+                'SELECT ws_med_name, ws_qty from medicines where ws_pat_id=%s', [patientId])
+            medicine = cursor.fetchall()
+            # fetch medicine rate
+            cursor.execute("SELECT ws_med_name, ws_rate FROM meds_master WHERE ws_med_name IN(" +
+                           "SELECT DISTINCT ws_med_name FROM medicines where ws_pat_id=%s)", [patientId])
+            medrate = cursor.fetchall()
+            medratelist = {}
+            for med in medrate:
+                medratelist[med['ws_med_name']] = float(med['ws_rate'])
+            # calculate medicine charge
+            for med in medicine:
+                med_charge += med['ws_qty'] * medratelist[med['ws_med_name']]
+            
+            # fetch diagnostics list
+            cursor.execute(
+                "SELECT diagnostics.ws_test_id AS test_id, diagnostics.ws_diagn AS diagnosis, tests.ws_test_chrg AS charge FROM diagnostics LEFT JOIN tests ON diagnostics.ws_test_id=tests.ws_test_id AND diagnostics.ws_pat_id=%s", [patientId])
+            diganosis = cursor.fetchall()
+            if diganosis:
+                for diag in diganosis:
+                    diagnos_charge += diag['charge']
+
+            total_charge = room_charge + med_charge + diagnos_charge
+            # if medicine:
+            #     flash('Data found', 'success')
+            cursor.close()
+            return render_template("includes/patientBilling.html", patient=patient, no_days=no_days, medicine=medicine, medratelist=medratelist, diganosis=diganosis, room_charge=room_charge, med_charge=med_charge, diagnos_charge=diagnos_charge, total_charge=total_charge)
+        else:
+            cursor.close()
+            flash('Either no patient found or bill generated alredy', 'danger')
     return render_template("includes/patientBilling.html")
 
+
+@app.route("/confirmBilling", methods=['GET'])
+def confirmBilling():
+    patientId = request.args.get('patientId')
+    rbill = request.args.get('rbill')
+    mbill = request.args.get('mbill')
+    dbill = request.args.get('dbill')
+    total = request.args.get('total')
+    if not (patientId is None or rbill is None or mbill is None or total is None):
+        cursor = mysql.connection.cursor()
+        try:
+            today = date.today()
+            print(today)
+            cursor.execute(
+                'UPDATE patient SET ws_discharge=%s WHERE ws_pat_id=%s', (str(today), patientId))
+            cursor.execute('INSERT INTO bills(dbill,mbill,rbill,pid) VALUES(%s,%s,%s,%s)', (dbill, mbill, rbill, patientId))
+            mysql.connection.commit()
+            flash('Bill generated successfully', 'success')
+        except:
+            flash('Some error occured, please retry!', 'danger')
+        finally:
+            cursor.close()
+    return redirect(url_for('patientBilling'))
+    
 
 @app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
