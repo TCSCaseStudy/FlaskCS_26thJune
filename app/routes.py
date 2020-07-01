@@ -284,7 +284,7 @@ def patientBilling():
             total_charge = room_charge = med_charge = diagnos_charge = float(0)
             today = date.today()
             patient['ws_discharge'] = today
-            
+
             doj = patient['ws_doj']
             doj_date = str(doj).split('-')
             d2_y = int(doj_date[0])
@@ -316,7 +316,7 @@ def patientBilling():
             # calculate medicine charge
             for med in medicine:
                 med_charge += med['ws_qty'] * medratelist[med['ws_med_name']]
-            
+
             # fetch diagnostics list
             cursor.execute(
                 "SELECT diagnostics.ws_test_id AS test_id, diagnostics.ws_diagn AS diagnosis, tests.ws_test_chrg AS charge FROM diagnostics LEFT JOIN tests ON diagnostics.ws_test_id=tests.ws_test_id AND diagnostics.ws_pat_id=%s", [patientId])
@@ -359,7 +359,7 @@ def confirmBilling():
         finally:
             cursor.close()
     return redirect(url_for('patientBilling'))
-    
+
 
 @app.route("/getPatientDetails", methods=['GET', 'POST'])
 def getPatientDetails():
@@ -369,10 +369,13 @@ def getPatientDetails():
     if request.method == 'POST':
         patientid = request.form['patientid']
         session['patientid'] = patientid
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
         'SELECT ws_pat_id AS PatientID, ws_pat_name AS PatientName,ws_age AS Age, ws_adrs AS Address, ws_doj AS DateofAdmission FROM patient WHERE ws_pat_id = {}'. format(patientid))
         data = cursor.fetchall()
+
+
         #if no records fetched display Id does not exist
         if not len(data):
             msg= "Patient with this Id does not exist"
@@ -488,6 +491,11 @@ def medIssueSuccess():
             mysql.connection.commit()
         except Exception as e:
             return str(e)
+
+    #Clearing medlist
+    nl=[]
+    obj.setMed(nl)
+
     return render_template("includes/medIssueSuccess.html")
 
 
