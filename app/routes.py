@@ -12,7 +12,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-# app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -129,6 +129,7 @@ def welcome():
 
 @app.route("/createPatient",methods=['GET', 'POST'])
 def createPatient():
+    popSession()
     msg = ''
     message=''
     ts = time.time()
@@ -150,9 +151,15 @@ def createPatient():
 
 @app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
+<<<<<<< Updated upstream
     msg=''
     message=''
     done=False
+=======
+    popSession()
+    msg = ''
+    message = ''
+>>>>>>> Stashed changes
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and 'pid' in request.form:
@@ -224,6 +231,7 @@ def deletePatient():
 
 @app.route("/delete", methods=['POST'])
 def delete():
+    popSession()
     cursor = mysql.connection.cursor()
     try:
         print(session['id'])
@@ -239,14 +247,31 @@ def delete():
 
 @app.route("/viewAllPatients", methods=['GET', 'POST'])
 def viewAllPatients():
-    popSession()
+    if ("count" not in session) or (session["count"]<0):
+        session["count"]=0
     cursor = mysql.connection.cursor()
     cursor.execute(
         "SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_rtype FROM patient WHERE ws_status = 'Active' ")
     patientData = cursor.fetchall()
-    return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True)
+    pageLen = 10
+    isLastPage = False
+    if session["count"]>=len(patientData)//pageLen:
+        session["count"]=(len(patientData)-1)//pageLen
+        isLastPage=True
 
+    count = session["count"]
+    patientData = patientData[count*pageLen:(count*pageLen+pageLen)]
+    return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True,count=count,isLastPage=isLastPage)
 
+@app.route("/next",methods=['GET', 'POST'])
+def next():
+    session["count"]+=1
+    return redirect(url_for('viewAllPatients'))
+
+@app.route("/prev",methods=['GET', 'POST'])
+def prev():
+    session["count"]-=1
+    return redirect(url_for('viewAllPatients'))
 
 @app.route("/searchPatients", methods=['GET', 'POST'])
 def searchPatients():
@@ -500,7 +525,9 @@ def getPatientDiagnosticDetails():
             cursor = mysql.connection.cursor()
             cursor.execute("SELECT ws_pat_id,ws_pat_name,ws_age,ws_adrs,ws_doj,ws_pat_city,ws_pat_state FROM patient WHERE ws_pat_id=%s", (Id,))
             patientData = cursor.fetchone()
+            # check if patient data exists with the given patient id
             if patientData:
+                # fetch the medicines of the patient
                 cursor.execute("SELECT m.ws_med_name FROM patient p,medicines m WHERE p.ws_pat_id=m.ws_pat_id AND p.ws_pat_id=%s", (Id,))
                 medicine=cursor.fetchall()
                 patientData['ws_med_name']=''
@@ -508,7 +535,7 @@ def getPatientDiagnosticDetails():
                     med=[]
                     for x in medicine:
                         med.append(x['ws_med_name'])
-
+                    # If medicine is there for patient then add it to patientData
                     patientData['ws_med_name']=med
                 cursor.close()
                 return render_template('includes/getPatientDiagonsticDetails.html', patientData=patientData)
@@ -540,6 +567,11 @@ def diagnostics(patId,msg):
             session["diagnosticsData"]=[]
             cursor.execute('select ws_test_name,ws_test_id,ws_test_chrg from tests')
             session["diagnosticsData"] = cursor.fetchall()
+            if len(session["diagnosticsData"])==0:
+                flash("No Test Available right now!!")
+                popSession()
+                return render_template("includes/diagnostics.html", Id = id,msg="No tests")
+
         test_names=[]
         for x in session["diagnosticsData"]:
             test_names.append(x['ws_test_name'])
@@ -585,3 +617,4 @@ def process():
 def popSession():
     session.pop("diagnosticsData",None)
     session.pop("addedTests",None)
+    session.pop("count",None)

@@ -1,11 +1,50 @@
 {% extends "index.html" %}
 {% block content %}
 <!-- Add code inside this block -->
-<br><br>
-<h3 style="text-align: center; color: rgb(24, 24, 221);"><b>Patients Details</b></h3>
-<br><br>
+<style>
+    a {
+      text-decoration: none;
+      display: inline-block;
+      padding: 8px 16px;
+    }
+    
+    a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .previous {
+      background-color: #4CAF50;
+      color:white;
+    }
+    
+    .next {
+      background-color: #4CAF50;
+      color: white;
+      float: right;
+    }
+    
+    </style>
+<br>
+<h3 style="text-align: center; color: rgb(24, 24, 221);">Patients Details</h3>
+<br>
 <div>
-    <table class="table table-hover">
+    
+    <form style="margin:auto;max-width:900px;" name ="page">
+    {% if count==0 and isLastPage %}
+        
+       
+    {% elif count==0  %}
+        <a href="/next" class="next" > Next &raquo;</a>
+    {% elif isLastPage %}
+        <a href="/prev" class="previous" >&laquo; Previous</a>
+    
+    {% else %}
+        <a href="/prev" class="previous"  >&laquo; Previous</a>
+        <a href="/next" class="next"> Next &raquo;</a>
+    {% endif %}
+    <br><br>
+    <table class="table table-hover" > 
         <thead>
             <tr>
                 <th scope="col">Patient Id</th>
@@ -30,9 +69,11 @@
 
             </tr>
             {% endfor %}
-
+            
         </tbody>
     </table>
+    <p style="text-align: center;">Page {{ count+1 }}</p>
+    </form>
     <br><br>
     <br>
 </div>
