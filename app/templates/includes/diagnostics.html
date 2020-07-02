@@ -5,6 +5,7 @@
 
 <div>
     <h2 style="text-align: center; color: rgb(6, 6, 80);">Diagnostic Screen</h2>
+    
     {% if patientTests %}
         <div>
             <form action=""  style="margin:auto;max-width:500px;">
@@ -42,20 +43,30 @@
     
 
         <form  action="" method="POST" style="margin:auto;max-width:500px;">
-        {% if msg!="success" %}
-            <select name="tests" id="tests" style="text-align-last:center;width:400px;height:50px; text-align: center;" required>
-                
-                {% for test_name in test_names %}
-                    <option value="{{ test_name }}">{{ test_name }}</option>
-                {% endfor %}
+            {% if msg=="No tests" %}
+
+                {% for message in get_flashed_messages() %}
+                    <div class="p-3 mb-2 bg-danger text-white">{{ message }}</div>
             
-            </select>
-                <button type="submit" class="btn btn-primary" style="background-color: rgb(26, 26, 170); border-radius: 2px; font-size: 20px;">Add </button>
-            <br><br><br>
-        {% else %}
-        
-            <a href="{{ url_for('diagnostics',patId=Id)}}" style="text-decoration: underline;color:rgb(202, 48, 21); float: right;"><b>Add another test?</b></a>
-            <br><br><br>
+                {% endfor %}
+
+            {% endif %}
+            <br><br>
+            {% if msg!="success" %}
+                <select name="tests" id="tests" style="text-align-last:center;width:400px;height:50px; text-align: center;" required>
+                    
+                    {% for test_name in test_names %}
+                        <option value="{{ test_name }}">{{ test_name }}</option>
+                    {% endfor %}
+                
+                </select>
+                    <button type="submit" class="btn btn-primary" style="background-color: rgb(26, 26, 170); border-radius: 2px; font-size: 20px;">Add </button>
+                <br><br><br>
+                
+            {% else %}
+            
+                <a href="{{ url_for('diagnostics',patId=Id)}}" style="text-decoration: underline;color:rgb(202, 48, 21); float: right;"><b>Add another test?</b></a>
+                <br><br><br>
             {% endif %} 
         </form>
         
