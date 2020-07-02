@@ -12,7 +12,7 @@ app.secret_key = config.Config.SECRET_KEY
 # app.config['MYSQL_PASSWORD'] = ''
 # ----------------------------------------------
 # ------------------ MILI ----------------------
-app.config['MYSQL_PASSWORD'] = 'password'
+# app.config['MYSQL_PASSWORD'] = 'password'
 # ----------------------------------------------
 # ------------------ COMMON --------------------
 app.config['MYSQL_HOST'] = 'localhost'
@@ -131,7 +131,7 @@ def welcome():
 def createPatient():
     popSession()
     msg = ''
-    message=''
+    message = ''
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and request.form.get('ssn'):
@@ -151,23 +151,18 @@ def createPatient():
 
 @app.route("/updatePatient", methods=['GET', 'POST'])
 def updatePatient():
-<<<<<<< Updated upstream
-    msg=''
-    message=''
-    done=False
-=======
     popSession()
     msg = ''
     message = ''
->>>>>>> Stashed changes
+    done = False
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
     if request.method == 'POST' and 'pid' in request.form:
         pid = request.form['pid']
-        session['pid']=pid
+        session['pid'] = pid
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * from patient where ws_pat_id =%s',[pid])
-        res=cursor.fetchone()
+        cursor.execute('SELECT * from patient where ws_pat_id =%s', [pid])
+        res = cursor.fetchone()
         if res:
             flash("Patient Found. Edit details to update!")
             return render_template("includes/updatePatient.html",pid=pid,name=res['ws_pat_name'],age=res['ws_age'],doj=res['ws_doj'],bedType=res['ws_rtype'],address=res['ws_adrs'],state=res['ws_pat_state'],city=res['ws_pat_city'], msg='info',done=True,message=message,timestamp=timestamp)
@@ -234,7 +229,6 @@ def delete():
     popSession()
     cursor = mysql.connection.cursor()
     try:
-        print(session['id'])
         cursor.execute('delete from patient where ws_pat_id=%s',[session['id']])
         mysql.connection.commit()
         flash("Patient deletion initiated successfully")
@@ -373,7 +367,6 @@ def confirmBilling():
         cursor = mysql.connection.cursor()
         try:
             today = date.today()
-            print(today)
             cursor.execute(
                 'UPDATE patient SET ws_discharge=%s WHERE ws_pat_id=%s', (str(today), patientId))
             cursor.execute('INSERT INTO bills(dbill,mbill,rbill,pid) VALUES(%s,%s,%s,%s)', (dbill, mbill, rbill, patientId))
@@ -600,7 +593,6 @@ def diagnostics(patId,msg):
                     break
             else:
                 session["addedTests"] += [{'pat_id':id,'test_name':test,'test_id':test_id,'test_charge':test_charge}]
-            print(session["addedTests"])
 
         return render_template("includes/diagnostics.html", Id = id, test_names=test_names,msg=msg,patientTests=patientTests,addedTests=session["addedTests"])
 
