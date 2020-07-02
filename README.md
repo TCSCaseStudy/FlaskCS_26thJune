@@ -3,7 +3,7 @@ This is a Case Study using Flask Framework, assigned by TCS on 26th June 2020 .
 
 # LOGIN Details
 # Ids = [receptionist,diagnostics,pharmacist]
-# Password = TCSCS26thJune    (common for all)
+# Password = TCSCS26thJune#    (common for all)
 
 # IMPORTANT POINTS HERE
 (Please check this once before starting everyday)
