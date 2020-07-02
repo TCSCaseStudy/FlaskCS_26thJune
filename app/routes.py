@@ -1,3 +1,4 @@
+import functools
 from app import app
 from flask_mysqldb import MySQL
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
@@ -26,11 +27,21 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # ----------------------------------------------
 mysql = MySQL(app)
 
+
+def login_required(func):
+    @functools.wraps(func)
+    def secure_function(*args, **kwargs):
+        if not session['loggedin']:
+            return redirect(url_for("login"))
+        return func(*args, **kwargs)
+    return secure_function
+
 @app.route("/")
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     logout()
     popSession()
+    session['loggedin']=False
     # Output message if something goes wrong...
     msg = ''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -122,12 +133,14 @@ def logout():
 
 
 @app.route("/welcome")
+@login_required
 def welcome():
     popSession()
     return render_template("includes/welcome.html")
 
 
 @app.route("/createPatient",methods=['GET', 'POST'])
+@login_required
 def createPatient():
     popSession()
     msg = ''
@@ -150,6 +163,7 @@ def createPatient():
     return render_template("includes/createPatient.html", msg=msg,message=message,timestamp=timestamp)
 
 @app.route("/updatePatient", methods=['GET', 'POST'])
+@login_required
 def updatePatient():
     popSession()
     msg = ''
@@ -174,6 +188,7 @@ def updatePatient():
 
 
 @app.route("/insertPatData", methods=['GET', 'POST'])
+@login_required
 def insertPatData():
     msg = ''
     message = ''
@@ -201,6 +216,7 @@ def insertPatData():
 
     
 @app.route("/deletePatient", methods=['GET', 'POST'])
+@login_required
 def deletePatient():
     popSession()
     cursor = mysql.connection.cursor()
@@ -225,21 +241,26 @@ def deletePatient():
 
 
 @app.route("/delete", methods=['POST'])
+@login_required
 def delete():
     popSession()
     cursor = mysql.connection.cursor()
     try:
         cursor.execute('delete from patient where ws_pat_id=%s',[session['id']])
+        cursor.execute('delete from bills where pid=%s',[session['id']])
+        cursor.execute('delete from diagnostics where ws_pat_id=%s',[session['id']])
+        cursor.execute('delete from medicines where ws_pat_id=%s', [session['id']])
         mysql.connection.commit()
         flash("Patient deletion initiated successfully")
         return render_template('includes/deletePatient.html', msg="success")
-    except Exception as e:
-        flash(str(e))
-        return render_template('includes/deletePatient.html', msg="success")
+    except:
+        flash('Deletion Failed. Please try again later!')
+        return render_template('includes/deletePatient.html', msg="danger")
 
 
 
 @app.route("/viewAllPatients", methods=['GET', 'POST'])
+@login_required
 def viewAllPatients():
     if ("count" not in session) or (session["count"]<0):
         session["count"]=0
@@ -258,16 +279,19 @@ def viewAllPatients():
     return render_template("includes/viewAllPatients.html", patientData=patientData, viewAllPatients=True,count=count,isLastPage=isLastPage)
 
 @app.route("/next",methods=['GET', 'POST'])
+@login_required
 def next():
     session["count"]+=1
     return redirect(url_for('viewAllPatients'))
 
 @app.route("/prev",methods=['GET', 'POST'])
+@login_required
 def prev():
     session["count"]-=1
     return redirect(url_for('viewAllPatients'))
 
 @app.route("/searchPatients", methods=['GET', 'POST'])
+@login_required
 def searchPatients():
     popSession()
     cursor = mysql.connection.cursor()
@@ -292,6 +316,7 @@ def searchPatients():
 
 
 @app.route("/patientBilling", methods=['GET', 'POST'])
+@login_required
 def patientBilling():
     popSession()
     if request.method == 'POST' and 'Id' in request.form:
@@ -356,6 +381,7 @@ def patientBilling():
 
 
 @app.route("/confirmBilling", methods=['GET'])
+@login_required
 def confirmBilling():
     patientId = request.args.get('patientId')
     rbill = mbill = dbill = total = 0
@@ -380,6 +406,7 @@ def confirmBilling():
 
 
 @app.route("/getPatientDetails", methods=['GET', 'POST'])
+@login_required
 def getPatientDetails():
     popSession()
     msg=""
@@ -434,6 +461,7 @@ class Medicine:
 obj = Medicine()
 
 @app.route("/issueMeds", methods=['GET', 'POST'])
+@login_required
 def issueMeds():
     msg=""
     patientid = session.get('patientid', None)
@@ -472,6 +500,7 @@ def issueMeds():
 
 #If medicines are isssued Successfully load medIssueSuccess
 @app.route("/medIssueSuccess")
+@login_required
 def medIssueSuccess():
     patientid = session.get('patientid', None)
 
@@ -518,6 +547,7 @@ def medIssueSuccess():
 
 
 @app.route("/getPatientDiagnosticDetails", methods=['GET', 'POST'])
+@login_required
 def getPatientDiagnosticDetails():
     popSession()
     if request.method == 'POST' and 'Id' in request.form:
@@ -552,7 +582,8 @@ def getPatientDiagnosticDetails():
 
 @app.route("/diagnostics/<patId>/<msg>")
 @app.route("/diagnostics/<patId>/", methods=['GET', 'POST'] ,defaults= {'msg': ""})
-def diagnostics(patId,msg):
+@login_required
+def diagnostics(patId, msg):
     if msg=="success":
         flash("Diagnostic Added Successfully")
     else:
@@ -597,6 +628,7 @@ def diagnostics(patId,msg):
         return render_template("includes/diagnostics.html", Id = id, test_names=test_names,msg=msg,patientTests=patientTests,addedTests=session["addedTests"])
 
 @app.route('/process', methods =['POST'])
+@login_required
 def process():
     cursor = mysql.connection.cursor()
     if request.method=="POST"  :
